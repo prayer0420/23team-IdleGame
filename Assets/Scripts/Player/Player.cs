@@ -8,6 +8,8 @@ public class Player : MonoBehaviour
     [field: SerializeField] AnimationData animationData;
 
     public Animator animator {  get; private set; }
+    [field: SerializeField] public PlayerSO Data { get;  set; }
+
     private void Awake()
     {
         animationData.Initialize();
