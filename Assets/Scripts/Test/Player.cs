@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using GameProject.Characters;
 using GameProject.Managers;
+using System.Collections.Generic;
 
 namespace GameProject.Characters
 {
@@ -11,22 +12,29 @@ namespace GameProject.Characters
         public float Speed { get; set; }
         public bool IsAlive => HP > 0;
         private Rigidbody2D rb;
+        private BoxCollider2D collider2d;
+        private List<Enemy> enemyList = new List<Enemy>();
+        private Dictionary<Enemy, int> enemyIndexMap = new Dictionary<Enemy, int>();
 
         // 플레이어 위치 및 크기 설정
-        private Vector2 startPosition = new Vector2(100, 640);
-        private Vector2 size = new Vector2(100, 100);
+        private Vector2 startPosition = new Vector2(-1.5f, -2.11f);
 
-        private void Start()
+        private void Awake()
         {
-            HP = 100;
-            Speed = 200f;
             rb = GetComponent<Rigidbody2D>();
+            InitializePlayer();
+            collider2d  = GetComponent<BoxCollider2D>();
+        }
+
+        public void InitializePlayer()
+        {
+            HP = 10000;
+            Speed = 200f;
 
             // 초기 위치 설정
             transform.position = startPosition;
-            transform.localScale = size;
+            transform.rotation = Quaternion.identity;
         }
-
         public void Move()
         {
             rb.velocity = new Vector2(Speed * Time.deltaTime, 0);
@@ -39,13 +47,36 @@ namespace GameProject.Characters
 
         public void Attack()
         {
-            // 공격 범위 내의 적에게 데미지
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.right, 50);
-            if (hit.collider != null && hit.collider.CompareTag("Enemy"))
+            foreach (Enemy enemy in enemyList)
             {
-                Enemy enemy = hit.collider.GetComponent<Enemy>();
-                enemy.TakeDamage(20);
-                Debug.Log("플레이어가 적에게 공격");
+                if (enemy != null)
+                {
+                    enemy.TakeDamage(30);
+                    Debug.Log("플레이어가 적을 공격했습니다.");
+                }
+            }
+        }
+
+        public void AddEnemy(Enemy enemy)
+        {
+            if (!enemyIndexMap.ContainsKey(enemy))
+            {
+                enemyList.Add(enemy);
+                enemyIndexMap[enemy] = enemyList.Count - 1;
+            }
+        }
+
+        public void RemoveEnemy(Enemy enemy)
+        {
+            if (enemyIndexMap.TryGetValue(enemy, out int index))
+            {
+                enemyList.RemoveAt(index);
+                enemyIndexMap.Remove(enemy);
+                // 인덱스 재정렬
+                for (int i = index; i < enemyList.Count; i++)
+                {
+                    enemyIndexMap[enemyList[i]] = i;
+                }
             }
         }
 
@@ -61,37 +92,34 @@ namespace GameProject.Characters
         private void Die()
         {
             GameManager.Instance.OnPlayerDeath();
+            Debug.Log("플레이어 사망");
         }
 
-        private void Update()
+        private void OnTriggerEnter2D(Collider2D collision)
         {
-            // 적이 일정 거리 내에 있으면 공격, 아니면 이동
-            Enemy nearestEnemy = FindNearestEnemy();
-            if (nearestEnemy != null && Vector2.Distance(transform.position, nearestEnemy.transform.position) <= 50f)
+            if (collision.CompareTag("Enemy"))
             {
-                Attack();
-            }
-            else
-            {
-                //Move();
-            }
-        }
-
-        private Enemy FindNearestEnemy()
-        {
-            Enemy[] enemies = FindObjectsOfType<Enemy>();
-            Enemy nearest = null;
-            float minDistance = float.MaxValue;
-            foreach (Enemy enemy in enemies)
-            {
-                float distance = Vector2.Distance(transform.position, enemy.transform.position);
-                if (distance < minDistance)
+                Enemy enemy = collision.GetComponent<Enemy>();
+                if (enemy != null && !enemyIndexMap.ContainsKey(enemy))
                 {
-                    minDistance = distance;
-                    nearest = enemy;
+                    AddEnemy(enemy);
+                    Attack();
                 }
             }
-            return nearest;
         }
+
+        private void OnTriggerExit2D(Collider2D collision)
+        {
+            if (collision.CompareTag("Enemy"))
+            {
+                Enemy enemy = collision.GetComponent<Enemy>();
+                if (enemy != null && enemyIndexMap.ContainsKey(enemy))
+                {
+                    RemoveEnemy(enemy);
+                }
+            }
+        }
+
+
     }
 }

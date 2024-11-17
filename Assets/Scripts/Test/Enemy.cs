@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using GameProject.Characters;
+using GameProject.Levels;
 
 namespace GameProject.Characters
 {
@@ -14,15 +15,26 @@ namespace GameProject.Characters
         public bool IsAlive => HP > 0;
         private Rigidbody2D rb;
         private Player player;
+        public Action OnDeath { get; set; }
 
-        private void Start()
+        public void InitializeEnemy(Player targetPlayer)
         {
-            HP = 50;
-            Speed = 150f; // 150 픽셀/초
+            HP = 30;
+            Speed = 1000f;
             rb = GetComponent<Rigidbody2D>();
-            player = FindObjectOfType<Player>();
+            player = targetPlayer;
         }
-
+        private void Update()
+        {
+            if (Vector2.Distance(transform.position, player.transform.position) <= 2f)
+            {
+                Attack();
+            }
+            else
+            {
+                Move();
+            }
+        }
         public void Move()
         {
             Vector2 direction = (player.transform.position - transform.position).normalized;
@@ -36,8 +48,7 @@ namespace GameProject.Characters
 
         public void Attack()
         {
-            player.TakeDamage(10);
-            Debug.Log("적이 플레이어에게 공격");
+            player.TakeDamage(1);
         }
 
         public void TakeDamage(int damage)
@@ -51,19 +62,12 @@ namespace GameProject.Characters
 
         private void Die()
         {
-            Destroy(gameObject, 1f); // 1초 후 오브젝트 제거
+            Debug.Log("적 사망");
+            Destroy(gameObject,1f); 
+            OnDeath?.Invoke();
+            StageManager.Instance.DeSubScribeAction(this);
         }
 
-        private void Update()
-        {
-            if (Vector2.Distance(transform.position, player.transform.position) <= 50f)
-            {
-                Attack();
-            }
-            else
-            {
-                Move();
-            }
-        }
+
     }
 }

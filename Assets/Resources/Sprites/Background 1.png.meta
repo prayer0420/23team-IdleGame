@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 6e70d840f16142d45997537ebc15ed3e
+guid: 9adcfbc067610ee42887d50d57e9e513
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -148,85 +148,22 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Back 3
+      name: Ground
       rect:
         serializedVersion: 2
-        x: 0
-        y: 143
-        width: 300
-        height: 60
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 024fa93b6e9dcd4e0800000000000000
-      internalID: -1955448553306655712
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Back 1
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 61
-        width: 300
-        height: 40
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
+        x: 125
+        y: 55
+        width: 67
+        height: 4
+      alignment: 9
+      pivot: {x: 0.5009424, y: 0.46335697}
+      border: {x: 0, y: 1, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
       spriteID: 64909246effb75160800000000000000
       internalID: 7014286043975846214
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Back 0
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 300
-        height: 60
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 32ff71a9b0fa30280800000000000000
-      internalID: -9078219959484023005
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Back 2
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 102
-        width: 300
-        height: 40
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 7d8557bbc7f152db0800000000000000
-      internalID: -4817409605821441833
       vertices: []
       indices: 
       edges: []
@@ -243,9 +180,11 @@ TextureImporter:
     secondaryTextures: []
     nameFileIdTable:
       Back 0: -9078219959484023005
-      Back 1: 7014286043975846214
       Back 2: -4817409605821441833
       Back 3: -1955448553306655712
+      Background 1_0: -233896161
+      Background 1_1: -1897362708
+      Ground: 7014286043975846214
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -1,7 +1,8 @@
 using UnityEngine;
-using System.Collections.Generic;
-using GameProject.Levels;
 using GameProject.Characters;
+using GameProject.Levels;
+using GameProject.UI;
+using UnityEngine.UIElements.Experimental;
 
 namespace GameProject.Managers
 {
@@ -10,17 +11,20 @@ namespace GameProject.Managers
         Normal,
         Hard
     }
+
     public class GameManager : MonoBehaviour
     {
-
-
         public static GameManager Instance { get; private set; }
         public DifficultyLevel CurrentDifficulty { get; private set; }
-        public List<Chapter> Chapters { get; private set; }
+
         private Player player;
         private UIManager uiManager;
-        private Chapter currentChapter;
-        private Stage currentStage;
+        private MapManager mapManager;
+        private StageManager stageManager;
+        public const int INITNUMBER = 1;
+
+        public int CurrentChapter { get; private set; }
+        public int CurrentStage { get; private set; }
 
         private void Awake()
         {
@@ -28,7 +32,6 @@ namespace GameProject.Managers
             {
                 Instance = this;
                 DontDestroyOnLoad(gameObject);
-                InitializeGame();
             }
             else
             {
@@ -36,63 +39,114 @@ namespace GameProject.Managers
             }
         }
 
-        //게임 초기화
+        private void Start()
+        {
+            // MapManager 설정
+            mapManager = MapManager.Instance;
+            stageManager = StageManager.Instance;
+            uiManager = UIManager.Instance;
+
+
+            InitializeGame();
+        }
+
         private void InitializeGame()
         {
             CurrentDifficulty = DifficultyLevel.Normal;
-            player = Instantiate(Resources.Load<GameObject>("Prefabs/Player")).GetComponent<Player>();
-            uiManager = GetComponent<UIManager>();
-            InitializeChapters();
+            CurrentChapter = INITNUMBER;
+            CurrentStage = INITNUMBER;
+            // 플레이어 생성
+            GameObject playerObj = Instantiate(Resources.Load<GameObject>("Prefabs/Player"));
+            player = playerObj.GetComponent<Player>();
 
-            currentChapter = Chapters[0];
-            currentStage = currentChapter.Stages[0];
-            StartStage(currentChapter.ChapterNumber, currentStage.StageNumber);
-        }
+            //uiManager = new GameObject("UIManager").AddComponent<UIManager>();
+            uiManager.InitializeUI(INITNUMBER);
 
-        //챕터 초기화
-        private void InitializeChapters()
-        {
-            Chapters = new List<Chapter>();
-            for (int i = 1; i <= 3; i++)
-            {
-                GameObject chapterObj = new GameObject($"Chapter_{i}");
-                Chapter chapter = chapterObj.AddComponent<Chapter>();
-                chapter.InitializeChapter(i, player);
-                Chapters.Add(chapter);
-            }
+            stageManager.InitializeStageManager(player);
+            
+            StartStage(CurrentChapter, CurrentStage);
         }
 
         public void StartStage(int chapterNumber, int stageNumber)
         {
-            currentChapter = Chapters[chapterNumber - 1];
-            currentStage = currentChapter.Stages[stageNumber - 1];
-            currentStage.InitializeStage(stageNumber, stageNumber == 3, currentChapter.GetComponent<Map>(), player);
-            uiManager.UpdateUI(chapterNumber, stageNumber);
+
+            // 맵 업데이트(페이드인-아웃, 새로운 맵 설정)
+            mapManager.ChangeMap(chapterNumber, () => { stageManager.StartStage(chapterNumber, stageNumber); });
+            Debug.Log("맵업뎃");
+
+            // 스테이지 시작(적 생성)
+            //stageManager.StartStage(chapterNumber, stageNumber);
+            Debug.Log("스테이지 재시작");
+
+            // UI 업데이트
+            uiManager.UpdateChapterUI(chapterNumber);
+            Debug.Log("챕터업데이트");
+
+            uiManager.UpdateStageUI(stageNumber);
+            Debug.Log("스테이지업데이트");
+
+            CurrentChapter = chapterNumber;
+            CurrentStage = stageNumber;
         }
 
-        public void CompleteStage()
+
+        //스테이지 클리어 시
+        public void OnStageCleared()
         {
-            currentStage.IsCleared = true;
-            uiManager.UpdateStarUI(currentStage.StageNumber, true);
+            //아직 보스맵까지 클리어한게 아니라면
+            if (CurrentStage < 3)
+            {
+                // 다음 스테이지로 이동
+                CurrentStage++;
+                Debug.Log($"{CurrentStage} 스테이지로 이동");
+
+                StartStage(CurrentChapter, CurrentStage);
+            }
+            else //보스맵까지 클리어 했다면
+            {
+                // 노말 3챕터의 3스테이지까지 클리어한게 아니라면
+                if (CurrentChapter < 3)
+                {
+                    // 다음 챕터로 이동
+                    CurrentChapter++;
+                    Debug.Log($"{CurrentChapter}챕터로 이동");
+                    //스테이지는 1부터 다시 시작
+                    CurrentStage = 1;
+                    StartStage(CurrentChapter, CurrentStage);
+                }
+                //노말 3챕터의 3스테이지를 클리어한것이라면
+                else
+                {
+                    // 노말의 모든 챕터 클리어 한 것이므로 
+                    if (CurrentDifficulty == DifficultyLevel.Normal)
+                    {
+                        // 어려움 난이도 해금
+                        CurrentDifficulty = DifficultyLevel.Hard;
+                        CurrentChapter = 1;
+                        CurrentStage = 1;
+                        uiManager.UnlockDifficultyUI(CurrentDifficulty);
+                        Debug.Log("어려움 난이도 해금!");
+                    }
+                    //어려움의 모듭 챕터를 클리어하면 끝~
+                    else
+                    {
+                        Debug.Log("모든 난이도의 모든 챕터를 클리어했습니다!");
+                    }
+                }
+            }
+            uiManager.UpdateStarUI(CurrentStage, true);
+            Debug.Log("스테이지 클리어");
         }
 
         public void OnPlayerDeath()
         {
-            uiManager.ShowDeathScreen();
-            
-            // 이전 스테이지로 돌아가기
-            int previousStageIndex = currentChapter.Stages.IndexOf(currentStage) - 1;
-            if (previousStageIndex >= 0)
+            // 사망 처리 및 이전 스테이지로 이동
+            if (CurrentStage > 1)
             {
-                StartStage(currentChapter.ChapterNumber, previousStageIndex + 1);
+                CurrentStage--;
             }
-            else
-            {
-                // 현재 챕터의 첫 스테이지라면 그대로 유지
-                StartStage(currentChapter.ChapterNumber, currentStage.StageNumber);
-            }
+            StartStage(CurrentChapter, CurrentStage);
+            Debug.Log("이전 스테이지 진행");
         }
     }
-
-
 }
