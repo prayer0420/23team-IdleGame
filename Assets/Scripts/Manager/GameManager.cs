@@ -1,152 +1,204 @@
 using UnityEngine;
-using GameProject.Characters;
-using GameProject.Levels;
-using GameProject.UI;
-using UnityEngine.UIElements.Experimental;
 
-namespace GameProject.Managers
+public enum DifficultyLevel
 {
-    public enum DifficultyLevel
+    Normal,
+    Hard
+}
+
+public class GameManager : MonoBehaviour
+{
+    public static GameManager Instance { get; private set; }
+
+    public int CurrentChapter { get; private set; }
+    public int CurrentStage { get; private set; }
+    public DifficultyLevel CurrentDifficulty { get; private set; }
+
+    private const int INITNUMBER = 1;
+
+    private SaveData saveData;
+    private TestPlayer player;
+    private UIManager uiManager;
+    private MapManager mapManager;
+    private StageManager stageManager;
+
+    private void Awake()
     {
-        Normal,
-        Hard
-    }
-
-    public class GameManager : MonoBehaviour
-    {
-        public static GameManager Instance { get; private set; }
-        public DifficultyLevel CurrentDifficulty { get; private set; }
-
-        private Player player;
-        private UIManager uiManager;
-        private MapManager mapManager;
-        private StageManager stageManager;
-        public const int INITNUMBER = 1;
-
-        public int CurrentChapter { get; private set; }
-        public int CurrentStage { get; private set; }
-
-        private void Awake()
+        if (Instance == null)
         {
-            if (Instance == null)
-            {
-                Instance = this;
-                DontDestroyOnLoad(gameObject);
-            }
-            else
-            {
-                Destroy(gameObject);
-            }
-        }
-
-        private void Start()
-        {
-            // MapManager ¼³Á¤
-            mapManager = MapManager.Instance;
-            stageManager = StageManager.Instance;
-            uiManager = UIManager.Instance;
-
-
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
             InitializeGame();
         }
-
-        private void InitializeGame()
+        else
         {
-            CurrentDifficulty = DifficultyLevel.Normal;
-            CurrentChapter = INITNUMBER;
-            CurrentStage = INITNUMBER;
-            // ÇÃ·¹ÀÌ¾î »ı¼º
-            GameObject playerObj = Instantiate(Resources.Load<GameObject>("Prefabs/Player"));
-            player = playerObj.GetComponent<Player>();
+            Destroy(gameObject);
+        }
+    }
 
-            //uiManager = new GameObject("UIManager").AddComponent<UIManager>();
-            uiManager.InitializeUI(INITNUMBER);
+    private void InitializeGame()
+    {
+        saveData = SaveManager.Instance.LoadGame();
 
-            stageManager.InitializeStageManager(player);
-            
-            StartStage(CurrentChapter, CurrentStage);
+        if (saveData == null)
+        {
+            saveData = new SaveData();
         }
 
-        public void StartStage(int chapterNumber, int stageNumber)
+        CurrentChapter = saveData.currentChapter;
+        CurrentStage = saveData.currentStage;
+        CurrentDifficulty = saveData.difficulty;
+
+        uiManager = UIManager.Instance;
+        mapManager = MapManager.Instance;
+        stageManager = StageManager.Instance;
+
+        CreatePlayer();
+        InitializeManagers();
+
+        StartStage(CurrentStage,false);
+    }
+
+    private void CreatePlayer()
+    {
+        GameObject playerPrefab = ResourceManager.Instance.LoadResource<GameObject>("Prefabs/TestPlayer");
+        if (playerPrefab != null)
         {
+            GameObject playerObj = Instantiate(playerPrefab);
+            player = playerObj.GetComponent<TestPlayer>();
+        }
+    }
 
-            // ¸Ê ¾÷µ¥ÀÌÆ®(ÆäÀÌµåÀÎ-¾Æ¿ô, »õ·Î¿î ¸Ê ¼³Á¤)
-            mapManager.ChangeMap(chapterNumber, () => { stageManager.StartStage(chapterNumber, stageNumber); });
-            Debug.Log("¸Ê¾÷µ«");
 
-            // ½ºÅ×ÀÌÁö ½ÃÀÛ(Àû »ı¼º)
-            //stageManager.StartStage(chapterNumber, stageNumber);
-            Debug.Log("½ºÅ×ÀÌÁö Àç½ÃÀÛ");
+    private void InitializeManagers()
+    {
+        stageManager.InitializeStageManager(player);
+    }
 
-            // UI ¾÷µ¥ÀÌÆ®
-            uiManager.UpdateChapterUI(chapterNumber);
-            Debug.Log("Ã©ÅÍ¾÷µ¥ÀÌÆ®");
-
-            uiManager.UpdateStageUI(stageNumber);
-            Debug.Log("½ºÅ×ÀÌÁö¾÷µ¥ÀÌÆ®");
-
-            CurrentChapter = chapterNumber;
-            CurrentStage = stageNumber;
+    public void StartStage(int stageNumber, bool isFade)
+    {
+        ChapterData currentChapterData = GetCurrentChapterData();
+        if (!currentChapterData.stages[stageNumber - 1].isUnlocked)
+        {
+            Debug.Log("ì•„ì§ ì ê²¨ìˆëŠ” ìŠ¤í…Œì´ì§€ì…ë‹ˆë‹¤.");
+            return;
         }
 
+        CurrentStage = stageNumber;
 
-        //½ºÅ×ÀÌÁö Å¬¸®¾î ½Ã
-        public void OnStageCleared()
+        mapManager.ChangeMap(CurrentChapter, () =>
         {
-            //¾ÆÁ÷ º¸½º¸Ê±îÁö Å¬¸®¾îÇÑ°Ô ¾Æ´Ï¶ó¸é
-            if (CurrentStage < 3)
+            stageManager.StartStage(CurrentChapter, CurrentStage, CurrentDifficulty);
+        }, isFade);
+
+        uiManager.UpdateUI(CurrentChapter, CurrentStage, CurrentDifficulty);
+        SaveGame();
+    }
+
+    public void OnStageCleared()
+    {
+        Debug.Log("ìŠ¤í…Œì´ì§€ í´ë¦¬ì–´");
+        ChapterData currentChapterData = GetCurrentChapterData();
+        // ìŠ¤í…Œì´ì§€ ë°ì´íƒ€ì—ì„œ í˜„ì¬ ìŠ¤í…Œì´ì§€ë¥¼ í´ë¦¬ì–´ë¡œ í‘œì‹œ
+        StageData currentStageData = currentChapterData.stages[CurrentStage - 1];
+        currentStageData.isCleared = true;
+
+
+        // STAR ì—…ë°ì´íŠ¸
+        uiManager.UpdateStarUI(CurrentStage, true);
+
+        // ë‹¤ìŒ ìŠ¤í…Œì´ì§€ í•´ê¸ˆ
+        if (CurrentStage < 3)
+        {
+            CurrentStage++;
+            currentChapterData.stages[CurrentStage - 1].isUnlocked = true;
+        }
+        //3ìŠ¤í…Œì´ì§€ í´ë¦¬ì–´ì‹œ -> ì±•í„°ì™„ë£Œ
+        else
+        {
+            // ì±•í„° ì™„ë£Œ ì‹œ ë‹¤ìŒ ì±•í„°ë¡œ ì´ë™í•˜ê³  STAR ì´ˆê¸°í™”
+            if (CurrentChapter < 3)
             {
-                // ´ÙÀ½ ½ºÅ×ÀÌÁö·Î ÀÌµ¿
-                CurrentStage++;
-                Debug.Log($"{CurrentStage} ½ºÅ×ÀÌÁö·Î ÀÌµ¿");
+                CurrentChapter++; //ì±•í„°+1
+                CurrentStage = 1; //ìŠ¤í…Œì´ì§€ ì´ˆê¸°í™”
+                ChapterData nextChapterData = GetCurrentChapterData();
+                //ë‹¤ìŒ ì±•í„°, ìŠ¤í…Œì´ì§€ í•´ê¸ˆ
+                nextChapterData.isUnlocked = true;
+                nextChapterData.stages[0].isUnlocked = true;
 
-                StartStage(CurrentChapter, CurrentStage);
+                // STAR UI ì´ˆê¸°í™”
+                uiManager.ResetStarUI();
             }
-            else //º¸½º¸Ê±îÁö Å¬¸®¾î Çß´Ù¸é
+            //3ì±•í„°ê¹Œì§€ ì™„ë£Œì‹œ
+            else
             {
-                // ³ë¸» 3Ã©ÅÍÀÇ 3½ºÅ×ÀÌÁö±îÁö Å¬¸®¾îÇÑ°Ô ¾Æ´Ï¶ó¸é
-                if (CurrentChapter < 3)
+                //í•˜ë“œëª¨ë“œë¡œ ì „í™˜
+                if (CurrentDifficulty == DifficultyLevel.Normal)
                 {
-                    // ´ÙÀ½ Ã©ÅÍ·Î ÀÌµ¿
-                    CurrentChapter++;
-                    Debug.Log($"{CurrentChapter}Ã©ÅÍ·Î ÀÌµ¿");
-                    //½ºÅ×ÀÌÁö´Â 1ºÎÅÍ ´Ù½Ã ½ÃÀÛ
+                    CurrentDifficulty = DifficultyLevel.Hard;
+                    CurrentChapter = 1;
                     CurrentStage = 1;
-                    StartStage(CurrentChapter, CurrentStage);
+
+                    // í•˜ë“œ ëª¨ë“œì˜ ì²« ë²ˆì§¸ ì±•í„°ì™€ ìŠ¤í…Œì´ì§€ í•´ê¸ˆ
+                    saveData.progress.hardChapters[0].isUnlocked = true;
+                    saveData.progress.hardChapters[0].stages[0].isUnlocked = true;
+
+                    // í•˜ë“œ ëª¨ë“œ í•´ê¸ˆ ë° STAR UI ì´ˆê¸°í™”
+                    uiManager.UnlockHardMode();
+                    uiManager.ResetStarUI();
                 }
-                //³ë¸» 3Ã©ÅÍÀÇ 3½ºÅ×ÀÌÁö¸¦ Å¬¸®¾îÇÑ°ÍÀÌ¶ó¸é
                 else
                 {
-                    // ³ë¸»ÀÇ ¸ğµç Ã©ÅÍ Å¬¸®¾î ÇÑ °ÍÀÌ¹Ç·Î 
-                    if (CurrentDifficulty == DifficultyLevel.Normal)
-                    {
-                        // ¾î·Á¿ò ³­ÀÌµµ ÇØ±İ
-                        CurrentDifficulty = DifficultyLevel.Hard;
-                        CurrentChapter = 1;
-                        CurrentStage = 1;
-                        uiManager.UnlockDifficultyUI(CurrentDifficulty);
-                        Debug.Log("¾î·Á¿ò ³­ÀÌµµ ÇØ±İ!");
-                    }
-                    //¾î·Á¿òÀÇ ¸ğµì Ã©ÅÍ¸¦ Å¬¸®¾îÇÏ¸é ³¡~
-                    else
-                    {
-                        Debug.Log("¸ğµç ³­ÀÌµµÀÇ ¸ğµç Ã©ÅÍ¸¦ Å¬¸®¾îÇß½À´Ï´Ù!");
-                    }
+                    // ê²Œì„ í´ë¦¬ì–´ ì²˜ë¦¬
+                    Debug.Log("ê²Œì„í´ë¦¬ì–´...");
                 }
             }
-            uiManager.UpdateStarUI(CurrentStage, true);
-            Debug.Log("½ºÅ×ÀÌÁö Å¬¸®¾î");
         }
 
-        public void OnPlayerDeath()
+        SaveGame();
+        uiManager.UpdateUI(CurrentChapter, CurrentStage, CurrentDifficulty);
+        Debug.Log("ë‹¤ìŒ ìŠ¤í…Œì´ì§€ ì´ë™");
+        StartStage(CurrentStage, true);
+    }
+
+    public ChapterData GetCurrentChapterData()
+    {
+        return CurrentDifficulty == DifficultyLevel.Normal ?
+            saveData.progress.normalChapters[CurrentChapter - 1] :
+            saveData.progress.hardChapters[CurrentChapter - 1];
+    }
+
+    public void SaveGame()
+    {
+        saveData.currentChapter = CurrentChapter;
+        saveData.currentStage = CurrentStage;
+        saveData.difficulty = CurrentDifficulty;
+
+        SaveManager.Instance.SaveGame(saveData);
+    }
+
+    public GameProgressData GetGameProgress()
+    {
+        return saveData.progress;
+    }
+
+    public void SetDifficulty(DifficultyLevel difficulty)
+    {
+        CurrentDifficulty = difficulty;
+        SaveGame();
+    }
+
+
+    private void OnApplicationPause(bool pauseStatus)
+    {
+        if (pauseStatus)
         {
-            // »ç¸Á Ã³¸® ¹× ÀÌÀü ½ºÅ×ÀÌÁö·Î ÀÌµ¿
-            if (CurrentStage > 1)
-            {
-                CurrentStage--;
-            }
-            StartStage(CurrentChapter, CurrentStage);
-            Debug.Log("ÀÌÀü ½ºÅ×ÀÌÁö ÁøÇà");
+            SaveGame();
         }
+    }
+
+    private void OnApplicationQuit()
+    {
+        SaveGame();
     }
 }

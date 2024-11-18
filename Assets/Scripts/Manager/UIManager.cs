@@ -1,72 +1,101 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using GameProject.Managers;
 
-namespace GameProject.UI
+public class UIManager : MonoBehaviour
 {
-    public class UIManager : MonoBehaviour
+    public static UIManager Instance { get; private set; }
+
+    [Header("Main UI")]
+    [SerializeField] private TextMeshProUGUI chapterText;
+    [SerializeField] private Button chapterButton;
+    [SerializeField] private Image[] starImages; 
+
+    [Header("Stage Select UI")]
+    [SerializeField] private StageSelectUI stageSelectUI;
+
+    private void Awake()
     {
-        public static UIManager Instance { get; private set; }
-
-        public TextMeshProUGUI chapterText;
-        public Image[] starImages;
-
-        private void Awake()
+        if (Instance == null)
         {
-            if (Instance == null)
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+            //InitializeUI();
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    //public void InitializeUI()
+    //{
+    //    SetupListeners();
+    //    UpdateUI(GameManager.Instance.CurrentChapter, GameManager.Instance.CurrentStage, GameManager.Instance.CurrentDifficulty);
+    //    UpdateAllStars();
+    //}
+    private void Start()
+    {
+        SetupListeners();
+    }
+    private void SetupListeners()
+    {
+        chapterButton.onClick.AddListener(ToggleStageSelect);
+    }
+
+    public void UpdateUI(int chapter, int stage, DifficultyLevel difficulty)
+    {
+        chapterText.text = $"Chapter {chapter}";
+        stageSelectUI.UpdateStageUI();
+    }
+
+    public void ToggleStageSelect()
+    {
+        stageSelectUI.ToggleStageSelect();
+    }
+
+    public void UpdateStarUI(int stageNumber, bool isCleared)
+    {
+        if (stageNumber <= 3)
+        {
+            for (int i = 0; i < stageNumber; i++)
             {
-                Instance = this;
-                DontDestroyOnLoad(gameObject);
-            }
-            else
-            {
-                Destroy(gameObject);
-            }
-        }
-
-        public void InitializeUI(int InitNumber)
-        {
-            // UI ¿ä¼Ò ÃÊ±âÈ­
-            UpdateChapterUI(InitNumber);
-            UpdateStageUI(InitNumber);
-            ResetStarUI();
-        }
-
-        public void UpdateChapterUI(int chapterNumber)
-        {
-            chapterText.text = $"Chapter {chapterNumber}";
-        }
-
-        public void UpdateStageUI(int stageNumber)
-        {
-            ResetStarUI();
-            UpdateStarUI(stageNumber);
-        }
-
-        public void UpdateStarUI(int stageNumber, bool isCleared = false)
-        {
-            for (int i = 0; i < stageNumber-1; i++)
-            {
-                if (stageNumber >= 1 && stageNumber <= 3)
+                string spritePath = isCleared ? "Sprites/Star_Filled" : "Sprites/Star_Empty";
+                Sprite updateSprite = ResourceManager.Instance.LoadResource<Sprite>(spritePath);
+                if (updateSprite != null)
                 {
-                    starImages[i].sprite = Resources.Load<Sprite>(isCleared ? "Sprites/Star_Filled" : "Sprites/Star_Empty");
+                    starImages[i].sprite = updateSprite;
                 }
             }
         }
+    }
 
-        private void ResetStarUI()
+    //ê²Œìž„ ì‹œìž‘ í• ë•Œ(Load, newGame)
+    private void UpdateAllStars()
+    {
+        ChapterData currentChapterData = GameManager.Instance.GetCurrentChapterData();
+        for (int i = 0; i < starImages.Length; i++)
         {
-            for (int i = 0; i < starImages.Length; i++)
+            bool isCleared = currentChapterData.stages[i].isCleared;
+            string spritePath = isCleared ? "Sprites/Star_Filled" : "Sprites/Star_Empty";
+            Sprite starSprite = ResourceManager.Instance.LoadResource<Sprite>(spritePath);
+            if (starSprite != null)
             {
-                starImages[i].sprite = Resources.Load<Sprite>("Sprites/Star_Empty");
+                starImages[i].sprite = starSprite;
             }
         }
+    }
 
-        public void UnlockDifficultyUI(DifficultyLevel difficulty)
+    public void ResetStarUI()
+    {
+        for (int i = 0; i < starImages.Length; i++)
         {
-            // ³­ÀÌµµ ÇØ±Ý UI ¾÷µ¥ÀÌÆ®
-            Debug.Log($"{difficulty} ³­ÀÌµµ ÇØ±Ý");
+            starImages[i].sprite = Resources.Load<Sprite>("Sprites/Star_Empty");
         }
+    }
+
+    public void UnlockHardMode()
+    {
+        stageSelectUI.UnlockHardMode();
     }
 }

@@ -1,87 +1,81 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-using GameProject.Characters;
-using GameProject.Managers;
 using System;
 
-namespace GameProject.Levels
+public class MapManager : MonoBehaviour
 {
-    public class MapManager : MonoBehaviour
+    private GameObject background;
+    [SerializeField] private Image fade;
+    private GameObject currentMap;
+    private GameObject nextMap;
+    public bool IsFade = false;
+
+    public static MapManager Instance { get; private set; }
+
+    private void Awake()
     {
-        private GameObject background;
-        [SerializeField]  private Image fade;
-        private GameObject currentMap;
-        private GameObject nextMap;
-
-        public static MapManager Instance { get; private set; }
-
-        private void Awake()
+        if (Instance == null)
         {
-            if (Instance == null)
-            {
-                Instance = this;
-                DontDestroyOnLoad(gameObject);
-            }
-            else
-            {
-                Destroy(gameObject);
-            }
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
         }
-
-        public void ChangeMap(int chapterNumber, Action callback)
+        else
         {
-            StartCoroutine(FadeOutAndIn(chapterNumber, callback));
+            Destroy(gameObject);
         }
+    }
 
-        private void LoadMap(int chapterNumber)
+    public void ChangeMap(int chapterNumber, Action callback, bool isFade)
+    {
+        StartCoroutine(FadeOutAndIn(chapterNumber, callback, isFade));
+    }
+
+    private void LoadMap(int chapterNumber)
+    {
+        if (currentMap != null)
         {
-            GameObject backgroundObj = Resources.Load<GameObject>($"Prefabs/Background_Chapter{chapterNumber}");
-            currentMap = Instantiate(backgroundObj, backgroundObj.transform.position, backgroundObj.transform.rotation);
-
-            if (GameManager.Instance.CurrentStage>1)
-            {
-                nextMap = backgroundObj;
-                DestroyImmediate(currentMap,true);
-                currentMap = nextMap;
-                return;
-            }
-            currentMap = backgroundObj;
-
-            
+            Destroy(currentMap);
         }
-
-        private IEnumerator FadeOutAndIn(int newChapterNumber, Action callback)
+        
+        string mapPath = $"Prefabs/Background_Chapter{chapterNumber}";
+        GameObject backgroundPrefab = ResourceManager.Instance.LoadResource<GameObject>(mapPath);
+        if (backgroundPrefab != null)
         {
-            // 새로운 맵 로드
+            currentMap = Instantiate(backgroundPrefab, Vector3.zero, Quaternion.identity);
+        }
+    }
+
+
+    private IEnumerator FadeOutAndIn(int newChapterNumber, Action callback, bool isFade)
+    {
+
+        //yield return new WaitForSeconds(1);
+        
+        if (isFade)
+        {
+            yield return StartCoroutine(Fade(0, 1));
             LoadMap(newChapterNumber);
-
-            if (GameManager.Instance.CurrentStage > 1)
-            {
-                // 페이드 인
-                yield return StartCoroutine(Fade(0, 1));
-                Debug.Log("페이드 인");
-            
-                // 페이드 아웃
-                yield return StartCoroutine(Fade(1, 0));
-                Debug.Log("페이드 아웃");
-            }
-            callback();
-
+            yield return StartCoroutine(Fade(1, 0));
         }
-
-        private IEnumerator Fade(float startAlpha, float endAlpha)
+        else
         {
-            float duration = 1f;
-            float elapsed = 0f;
-            Color color = fade.color;
-            while (elapsed < duration)
-            {
-                elapsed += Time.deltaTime;
-                float alpha = Mathf.Lerp(startAlpha, endAlpha, elapsed / duration);
-                fade.color = new Color(color.r, color.g, color.b, alpha);
-                yield return null;
-            }
+            LoadMap(newChapterNumber);
+        }
+        callback();
+    }
+
+    private IEnumerator Fade(float startAlpha, float endAlpha)
+    {
+        float duration = 2f;
+        float elapsed = 0f;
+        Color color = fade.color;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float alpha = Mathf.Lerp(startAlpha, endAlpha, elapsed / duration);
+            fade.color = new Color(color.r, color.g, color.b, alpha);
+            yield return null;
         }
     }
 }
