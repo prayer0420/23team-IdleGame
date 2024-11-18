@@ -50,8 +50,6 @@ public class MapManager : MonoBehaviour
     private IEnumerator FadeOutAndIn(int newChapterNumber, Action callback, bool isFade)
     {
 
-        //yield return new WaitForSeconds(1);
-        
         if (isFade)
         {
             yield return StartCoroutine(Fade(0, 1));

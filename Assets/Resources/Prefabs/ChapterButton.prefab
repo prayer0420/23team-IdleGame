@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &645138166410887163
 RectTransform:
   m_ObjectHideFlags: 0
@@ -164,7 +164,7 @@ GameObject:
   - component: {fileID: 2657042206620149865}
   - component: {fileID: -2650117232773183376}
   m_Layer: 5
-  m_Name: StageButton
+  m_Name: ChapterButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -288,10 +288,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f3bff3710a1374438bf758937e00e06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stageNumberText: {fileID: 1634876591930667360}
-  starImages: []
+  chapterNumberText: {fileID: 1634876591930667360}
   lockIcon: {fileID: 3005418942448875190}
   button: {fileID: 2657042206620149865}
+  starImages:
+  - {fileID: 6709250650929266328}
+  - {fileID: 6311011416567345145}
+  - {fileID: 1972694725267546143}
 --- !u!1 &6311794426222838692
 GameObject:
   m_ObjectHideFlags: 0

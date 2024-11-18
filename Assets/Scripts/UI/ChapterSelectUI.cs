@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 
-public class StageSelectUI : MonoBehaviour
+public class ChapterSelectUI : MonoBehaviour
 {
     [SerializeField] private GameObject stageSelectPanel;
     [SerializeField] private Transform stageButtonsContainer;
@@ -12,7 +12,12 @@ public class StageSelectUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI difficultyText;
 
     private bool isHardMode = false;
-    private StageButtonUI[] stageButtons;
+    private ChapterButtonUI[] stageButtons;
+
+    private void Awake()
+    {
+
+    }
 
     private void Start()
     {
@@ -29,37 +34,55 @@ public class StageSelectUI : MonoBehaviour
         stageSelectPanel.SetActive(!stageSelectPanel.activeSelf);
         if (stageSelectPanel.activeSelf)
         {
-            UpdateStageUI();
+            UpdateChapterUI();
         }
     }
 
-    public void UpdateStageUI()
+    public void UpdateChapterUI()
     {
-        InitializeStageButtons();
+        UpdateChapterButtonsForCurrentChapter();
     }
 
-    private void InitializeStageButtons()
+
+    private void InitializeChapterButtons()
     {
-        // 기존 버튼들 제거
-        foreach (Transform child in stageButtonsContainer)
+        Debug.Log("stagebutton 초기화2");
+        //버튼이 이미 있는경우엔 패스
+        if (stageButtons != null && stageButtons.Length > 0)
         {
-            Destroy(child.gameObject);
+            return;
+        }
+        int maxStages = 3;
+        stageButtons = new ChapterButtonUI[maxStages];
+
+        for (int i = 0; i < maxStages; i++)
+        {
+            GameObject buttonObj = Instantiate(stageButtonPrefab, stageButtonsContainer);
+            ChapterButtonUI chapterButtonUI = buttonObj.GetComponent<ChapterButtonUI>();
+            //chapterButtonUI.Initialize();
+            stageButtons[i] = chapterButtonUI;
+        }
+    }
+
+    private void UpdateChapterButtonsForCurrentChapter()
+    {
+        if(stageButtons == null)
+        {
+            Debug.Log("stagebutton 초기화1");
+            InitializeChapterButtons();
         }
 
-        // 현재 챕터의 스테이지 데이터 가져오기
         var progressData = GameManager.Instance.GetGameProgress();
         var currentChapters = isHardMode ? progressData.hardChapters : progressData.normalChapters;
         int currentChapterIndex = GameManager.Instance.CurrentChapter - 1;
         ChapterData currentChapter = currentChapters[currentChapterIndex];
 
-        stageButtons = new StageButtonUI[currentChapter.stages.Length];
-
-        for (int i = 0; i < currentChapter.stages.Length; i++)
+        for (int i = 0; i < stageButtons.Length; i++)
         {
-            GameObject buttonObj = Instantiate(stageButtonPrefab, stageButtonsContainer);
-            StageButtonUI stageButton = buttonObj.GetComponent<StageButtonUI>();
-            stageButton.Initialize(i + 1, currentChapter.stages[i]);
-            stageButtons[i] = stageButton;
+            ChapterButtonUI chapterButtonUI = stageButtons[i];
+            chapterButtonUI.gameObject.SetActive(true);
+            chapterButtonUI.UpdateChapterButtonUI(i+1, progressData.normalChapters[i]);
+            chapterButtonUI.HandleStarUpdate(progressData.normalChapters[i],i);
         }
     }
 
@@ -68,7 +91,7 @@ public class StageSelectUI : MonoBehaviour
         isHardMode = !isHardMode;
         UpdateDifficultyText();
         GameManager.Instance.SetDifficulty(isHardMode ? DifficultyLevel.Hard : DifficultyLevel.Normal);
-        UpdateStageUI();
+        UpdateChapterUI();
     }
 
     private void UpdateDifficultyText()

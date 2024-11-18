@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public enum DifficultyLevel
@@ -22,13 +23,14 @@ public class GameManager : MonoBehaviour
     private MapManager mapManager;
     private StageManager stageManager;
 
+    public Action<int,bool> OnStarUpdate;
+
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            InitializeGame();
         }
         else
         {
@@ -36,7 +38,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void InitializeGame()
+    private void Start()
+    {
+    }
+
+    public void InitializeGame()
     {
         saveData = SaveManager.Instance.LoadGame();
 
@@ -44,6 +50,7 @@ public class GameManager : MonoBehaviour
         {
             saveData = new SaveData();
         }
+
 
         CurrentChapter = saveData.currentChapter;
         CurrentStage = saveData.currentStage;
@@ -105,7 +112,8 @@ public class GameManager : MonoBehaviour
 
 
         // STAR 업데이트
-        uiManager.UpdateStarUI(CurrentStage, true);
+        OnStarUpdate?.Invoke(CurrentStage,true);
+        //uiManager.UpdateStarUI(CurrentStage, true);
 
         // 다음 스테이지 해금
         if (CurrentStage < 3)
@@ -124,7 +132,7 @@ public class GameManager : MonoBehaviour
                 ChapterData nextChapterData = GetCurrentChapterData();
                 //다음 챕터, 스테이지 해금
                 nextChapterData.isUnlocked = true;
-                nextChapterData.stages[0].isUnlocked = true;
+                nextChapterData.stages[CurrentStage-1].isUnlocked = true;
 
                 // STAR UI 초기화
                 uiManager.ResetStarUI();
@@ -170,6 +178,7 @@ public class GameManager : MonoBehaviour
 
     public void SaveGame()
     {
+        //TODO : Current뿐 아니라 전체 다 받아와야함
         saveData.currentChapter = CurrentChapter;
         saveData.currentStage = CurrentStage;
         saveData.difficulty = CurrentDifficulty;

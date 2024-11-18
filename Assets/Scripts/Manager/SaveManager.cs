@@ -20,6 +20,12 @@ public class SaveManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        Debug.Log("start");
+        GameManager.Instance.InitializeGame();
+    }
+
     public SaveData LoadGame()
     {
         Debug.Log("저장 경로: " + SavePath);
@@ -55,7 +61,7 @@ public class SaveManager : MonoBehaviour
         {
             string json = JsonUtility.ToJson(saveData, true);
             File.WriteAllText(SavePath, json);
-            Debug.Log("게임 저장");
+            //Debug.Log("게임 저장");
         }
         catch (System.Exception e)
         {

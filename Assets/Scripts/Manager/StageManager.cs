@@ -84,7 +84,6 @@ public class StageManager : MonoBehaviour
     public void OnStageClear()
     {
         GameManager.Instance.OnStageCleared();
-        Debug.Log("GameManager.Instance.OnStageCleared()");
     }
 
     private bool AreAllEnemiesDead()

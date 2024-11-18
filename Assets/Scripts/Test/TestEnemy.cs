@@ -13,7 +13,7 @@ public class TestEnemy : MonoBehaviour, ICharacter
     public void InitializeEnemy(TestPlayer targetPlayer)
     {
         HP = 30;
-        Speed = 5000f;
+        Speed = 4000f;
         rb = GetComponent<Rigidbody2D>();
         player = targetPlayer;
     }
@@ -61,7 +61,6 @@ public class TestEnemy : MonoBehaviour, ICharacter
 
     public void Death()
     {
-        Debug.Log("death");
         OnDeath?.Invoke();
     }
 }

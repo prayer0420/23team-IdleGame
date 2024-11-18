@@ -1,18 +1,21 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; private set; }
 
     [Header("Main UI")]
-    [SerializeField] private TextMeshProUGUI chapterText;
-    [SerializeField] private Button chapterButton;
-    [SerializeField] private Image[] starImages; 
+    [SerializeField] public TextMeshProUGUI chapterText;
+    [SerializeField] public Button chapterButton;
+    [SerializeField] public Image[] TopstarImages;
 
     [Header("Stage Select UI")]
-    [SerializeField] private StageSelectUI stageSelectUI;
+    [SerializeField] private ChapterSelectUI chapterSelectUI;
+
+    public Action<int, bool> OnStarUdpate;
 
     private void Awake()
     {
@@ -20,7 +23,6 @@ public class UIManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            //InitializeUI();
         }
         else
         {
@@ -28,34 +30,34 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    //public void InitializeUI()
-    //{
-    //    SetupListeners();
-    //    UpdateUI(GameManager.Instance.CurrentChapter, GameManager.Instance.CurrentStage, GameManager.Instance.CurrentDifficulty);
-    //    UpdateAllStars();
-    //}
     private void Start()
     {
-        SetupListeners();
-    }
-    private void SetupListeners()
-    {
-        chapterButton.onClick.AddListener(ToggleStageSelect);
+        GameManager.Instance.OnStarUpdate += UpdateStarUI;
+
+        chapterButton.onClick.AddListener(ToggleChapterSelect);
     }
 
+    private void OnDisable()
+    {
+        GameManager.Instance.OnStarUpdate -= UpdateStarUI;
+    }
+
+    
     public void UpdateUI(int chapter, int stage, DifficultyLevel difficulty)
     {
         chapterText.text = $"Chapter {chapter}";
-        stageSelectUI.UpdateStageUI();
+        //StagePanel창 업데이트
+        chapterSelectUI.UpdateChapterUI();
     }
 
-    public void ToggleStageSelect()
+    public void ToggleChapterSelect()
     {
-        stageSelectUI.ToggleStageSelect();
+        chapterSelectUI.ToggleStageSelect();
     }
 
     public void UpdateStarUI(int stageNumber, bool isCleared)
     {
+        //OnStarUdpate?.Invoke(stageNumber, isCleared);
         if (stageNumber <= 3)
         {
             for (int i = 0; i < stageNumber; i++)
@@ -64,7 +66,7 @@ public class UIManager : MonoBehaviour
                 Sprite updateSprite = ResourceManager.Instance.LoadResource<Sprite>(spritePath);
                 if (updateSprite != null)
                 {
-                    starImages[i].sprite = updateSprite;
+                    TopstarImages[i].sprite = updateSprite;
                 }
             }
         }
@@ -74,28 +76,31 @@ public class UIManager : MonoBehaviour
     private void UpdateAllStars()
     {
         ChapterData currentChapterData = GameManager.Instance.GetCurrentChapterData();
-        for (int i = 0; i < starImages.Length; i++)
+        for (int i = 0; i < TopstarImages.Length; i++)
         {
             bool isCleared = currentChapterData.stages[i].isCleared;
             string spritePath = isCleared ? "Sprites/Star_Filled" : "Sprites/Star_Empty";
             Sprite starSprite = ResourceManager.Instance.LoadResource<Sprite>(spritePath);
             if (starSprite != null)
             {
-                starImages[i].sprite = starSprite;
+                TopstarImages[i].sprite = starSprite;
+                Debug.Log("3");
+                OnStarUdpate?.Invoke(0, isCleared);
             }
         }
     }
 
     public void ResetStarUI()
     {
-        for (int i = 0; i < starImages.Length; i++)
+        for (int i = 0; i < TopstarImages.Length; i++)
         {
-            starImages[i].sprite = Resources.Load<Sprite>("Sprites/Star_Empty");
+            TopstarImages[i].sprite = Resources.Load<Sprite>("Sprites/Star_Empty");
+            OnStarUdpate?.Invoke(0, false);
         }
     }
 
     public void UnlockHardMode()
     {
-        stageSelectUI.UnlockHardMode();
+        chapterSelectUI.UnlockHardMode();
     }
 }
