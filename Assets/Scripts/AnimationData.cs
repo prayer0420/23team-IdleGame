@@ -10,14 +10,14 @@ public class AnimationData
     [SerializeField] private string movingParameterName = "Moving";
     [SerializeField] private string attackParameterName = "Attack";
 
-    public int idleParameterHash {  get; private set; }
-    public int movingParameterHash { get; private set ; }
-    public int attackParameterHash { get; private set;}
+    public int IdleParameterHash {  get; private set; }
+    public int MovingParameterHash { get; private set ; }
+    public int AttackParameterHash { get; private set;}
 
     public void Initialize()
     {
-        idleParameterHash = Animator.StringToHash(idleParameterName);
-        movingParameterHash = Animator.StringToHash(movingParameterName);
-        attackParameterHash = Animator.StringToHash(attackParameterName);
+        IdleParameterHash = Animator.StringToHash(idleParameterName);
+        MovingParameterHash = Animator.StringToHash(movingParameterName);
+        AttackParameterHash = Animator.StringToHash(attackParameterName);
     }
 }

@@ -3,9 +3,8 @@ public interface IState
 {
     public void Enter();
     public void Exit();
-    public void HandleInput();
     public void Update();
-    public void PhysicsUpdate();
+   
 }
 public abstract class StateMachine
 {
@@ -18,18 +17,12 @@ public abstract class StateMachine
         currentState?.Enter();      // 상태 시작
     }
 
-    public void HandleInput()
-    {
-        currentState?.HandleInput();
-    }
+  
 
     public void Update()
     {
         currentState?.Update();     // 해당 상태일때 매 프레임마다 호출
     }
 
-    public void PhysicsUpdate()
-    {
-        currentState?.PhysicsUpdate();      // 물리적 움직임 호출
-    }
+  
 }
