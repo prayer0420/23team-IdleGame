@@ -4,6 +4,7 @@ public interface IState
     public void Enter();
     public void Exit();
     public void Update();
+    public void FixedUpdate();
    
 }
 public abstract class StateMachine
@@ -22,6 +23,11 @@ public abstract class StateMachine
     public void Update()
     {
         currentState?.Update();     // 해당 상태일때 매 프레임마다 호출
+    }
+
+    public void FixedUpdate()       // 운동상태 매 프레임마다 호출
+    {
+        currentState?.FixedUpdate();
     }
 
   

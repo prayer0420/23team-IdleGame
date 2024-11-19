@@ -15,13 +15,14 @@ public class Player : MonoBehaviour, TakeDamage
     public Animator animator {  get; private set; }
     private PlayerStateMachine stateMachine;
     public Rigidbody2D rb;
-    public Vector2 currentPosition;
-   
+    public LayerMask targetMask;
+    
+
 
     private void Awake()
     {
         animationData.Initialize();
-        animator = GetComponentInChildren<Animator>();
+        animator = GetComponent<Animator>();
         stateMachine = new PlayerStateMachine(this);
       
     }
@@ -34,8 +35,26 @@ public class Player : MonoBehaviour, TakeDamage
    
     void Update()
     {
-        currentPosition = transform.position;
+        AttackDirectionCheck();
         stateMachine.Update();
+    }
+    private void FixedUpdate()
+    {
+        stateMachine.FixedUpdate();
+    }
+
+    public void AttackDirectionCheck()
+    {
+        RaycastHit2D hit = Physics2D.Raycast(stateMachine.Player.transform.position, stateMachine.Player.transform.right, Data.playerData.BaseAttackaDirection, targetMask);
+        if (hit.collider == null)
+        {
+            stateMachine.ChangeState(stateMachine.MoveState);
+            Debug.Log("AAA");
+        }
+        else
+        {
+            stateMachine.ChangeState(stateMachine.AttackState);
+        }
     }
 
     public void TakeDamage(float damage)

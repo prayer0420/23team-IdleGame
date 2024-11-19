@@ -2,48 +2,48 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class PlayerMoveState : PlayerBaseState
 {
     public PlayerMoveState(PlayerStateMachine stateMachine) : base(stateMachine) { }
 
-
+    Vector3 playerPosition;
     public override void Enter()
     {
-        moveSpeed = 0.001f;     // 플레이어의 데이터에서 스피드 가져오기
-                              //StartAnimation(stateMachine.Player.animationData.MovingParameterHash);
+        moveSpeed = 1f;     // 플레이어의 데이터에서 스피드 가져오기
+        StartAnimation(stateMachine.Player.animationData.MovingParameterHash);
 
     }
 
     public override void Exit()
     {
-        //StopAnimation(stateMachine.Player.animationData.MovingParameterHash);
+        StopAnimation(stateMachine.Player.animationData.MovingParameterHash);
     }
 
     public override void Update()
     {
-        PositionMove(startPosition);
-
-        AttackDirectionCheck();
 
 
-        if (AttackDirectionCheck() == true)
-        {
-            stateMachine.ChangeState(stateMachine.AttackState);
-        }
-
+       
 
     }
-
-    public void PositionMove(Vector2 targetPosition)
+    public override void FixedUpdate()
     {
-        if (Vector2.Distance(playerTransform, startPosition) > 0.1f)
-        {
-            Vector2 direction = targetPosition - playerTransform;
-            Vector2 moveDirection = direction.normalized * moveSpeed * Time.deltaTime;
+        PositionMove(startPosition);
+    }
 
-            rb.MovePosition(moveDirection);
+    public void PositionMove(Vector3 targetPosition)
+    {
+         playerPosition = stateMachine.Player.transform.position;
+         Vector3 distance = targetPosition - playerPosition;
+        Vector3 move = distance.normalized * moveSpeed * Time.deltaTime;
+        if (Vector2.Distance(stateMachine.Player.transform.position, targetPosition) > 0.1f)
+        {
+            // 이동
+            stateMachine.Player.rb.MovePosition(playerPosition + move);
+
         }
-        
+        else return;
     }
 }

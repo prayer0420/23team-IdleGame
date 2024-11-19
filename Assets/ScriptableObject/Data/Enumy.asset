@@ -9,11 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b05b079888c475f48aae7c6d81dd229f, type: 3}
-  m_Name: Player
+  m_Script: {fileID: 11500000, guid: cbbc04636fbd9ca43b53f5b8d5e41cf5, type: 3}
+  m_Name: Enumy
   m_EditorClassIdentifier: 
-  <playerData>k__BackingField:
-    <BaseDamage>k__BackingField: 5
-    <BaseAttackRate>k__BackingField: 3
-    <BaseMaxHealth>k__BackingField: 100
-    <BaseSpeed>k__BackingField: 0
+  <enumyData>k__BackingField:
+    <Damage>k__BackingField: 2
+    <AttackRate>k__BackingField: 2
+    <MaxHealth>k__BackingField: 50
+    <Speed>k__BackingField: 1

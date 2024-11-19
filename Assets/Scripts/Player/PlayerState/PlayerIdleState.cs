@@ -17,6 +17,11 @@ public class PlayerIdleState : PlayerBaseState
         StopAnimation(stateMachine.Player.animationData.IdleParameterHash);
     }
 
+    public override void FixedUpdate()
+    {
+        throw new System.NotImplementedException();
+    }
+
     public override void Update()
     {
     }
