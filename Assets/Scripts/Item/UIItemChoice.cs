@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class UIItemChoice : MonoBehaviour
 {
-    private UIItemInfo equippedItemInfo;
-    private UIItemInfo newItemInfo;
+    [SerializeField] private UIItemInfo equippedItemInfo;
+    [SerializeField] private UIItemInfo newItemInfo;
     private ItemData equippedItem;
     private ItemData newItem;
 
@@ -15,6 +15,12 @@ public class UIItemChoice : MonoBehaviour
         equippedItemInfo = transform.Find("EquippedItemInfo").GetComponent<UIItemInfo>();
         newItemInfo = transform.Find("NewItemInfo").GetComponent<UIItemInfo>();
 
+        equippedItemInfo.gameObject.SetActive(true);
+        newItemInfo.gameObject.SetActive(true);
+    }
+
+    private void Start()
+    {
         gameObject.SetActive(false);
     }
 

@@ -26,6 +26,8 @@ public class ItemShop : MonoBehaviour
     public void LetsGatcha()
     {
         newItem = GetItem();
+        Debug.Log(newItem);
+        Debug.Log(ItemManager.itemManager.uiItemChoice);
         ItemManager.itemManager.uiItemChoice.ChooseItem(newItem);
     }
 }
