@@ -13,7 +13,7 @@ public class TestEnemy : MonoBehaviour, ICharacter
     public void InitializeEnemy(TestPlayer targetPlayer)
     {
         HP = 30;
-        Speed = 4000f;
+        Speed = 1000f;
         rb = GetComponent<Rigidbody2D>();
         player = targetPlayer;
     }
