@@ -25,6 +25,8 @@ public class GameManager : MonoBehaviour
 
     public Action<int,bool> OnStarUpdate;
 
+    public bool isPause;
+
     private void Awake()
     {
         if (Instance == null)
