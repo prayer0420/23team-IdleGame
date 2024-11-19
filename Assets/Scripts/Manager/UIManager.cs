@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using System.Data;
 
 public class UIManager : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public class UIManager : MonoBehaviour
     [Header("Stage Select UI")]
     [SerializeField] private ChapterSelectUI chapterSelectUI;
 
-    public Action<int, bool> OnStarUdpate;
+    //public Action<int, bool> OnStarUdpate;
 
     private void Awake()
     {
@@ -45,19 +46,22 @@ public class UIManager : MonoBehaviour
     
     public void UpdateUI(int chapter, int stage, DifficultyLevel difficulty)
     {
+        //Top업데이트
         chapterText.text = $"Chapter {chapter}";
+        //UpdateStarUI(stag);
+        UpdateAllStars(stage);
+
         //StagePanel창 업데이트
         chapterSelectUI.UpdateChapterUI();
     }
 
     public void ToggleChapterSelect()
     {
-        chapterSelectUI.ToggleStageSelect();
+        chapterSelectUI.ToggleChapterPanelSelect();
     }
 
     public void UpdateStarUI(int stageNumber, bool isCleared)
     {
-        //OnStarUdpate?.Invoke(stageNumber, isCleared);
         if (stageNumber <= 3)
         {
             for (int i = 0; i < stageNumber; i++)
@@ -73,10 +77,10 @@ public class UIManager : MonoBehaviour
     }
 
     //게임 시작 할때(Load, newGame)
-    private void UpdateAllStars()
+    private void UpdateAllStars(int stage)
     {
         ChapterData currentChapterData = GameManager.Instance.GetCurrentChapterData();
-        for (int i = 0; i < TopstarImages.Length; i++)
+        for (int i = 0; i < stage-1; i++)
         {
             bool isCleared = currentChapterData.stages[i].isCleared;
             string spritePath = isCleared ? "Sprites/Star_Filled" : "Sprites/Star_Empty";
@@ -84,8 +88,6 @@ public class UIManager : MonoBehaviour
             if (starSprite != null)
             {
                 TopstarImages[i].sprite = starSprite;
-                Debug.Log("3");
-                OnStarUdpate?.Invoke(0, isCleared);
             }
         }
     }
@@ -95,12 +97,11 @@ public class UIManager : MonoBehaviour
         for (int i = 0; i < TopstarImages.Length; i++)
         {
             TopstarImages[i].sprite = Resources.Load<Sprite>("Sprites/Star_Empty");
-            OnStarUdpate?.Invoke(0, false);
         }
     }
 
     public void UnlockHardMode()
     {
-        chapterSelectUI.UnlockHardMode();
+        chapterSelectUI.ActivedifficultyToggleButton();
     }
 }

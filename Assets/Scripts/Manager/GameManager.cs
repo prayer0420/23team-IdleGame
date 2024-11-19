@@ -64,8 +64,7 @@ public class GameManager : MonoBehaviour
 
         CreatePlayer();
         InitializeManagers();
-
-        StartStage(CurrentStage,false);
+        StartStage(CurrentChapter, CurrentStage, CurrentDifficulty, false);
     }
 
     private void CreatePlayer()
@@ -84,7 +83,7 @@ public class GameManager : MonoBehaviour
         stageManager.InitializeStageManager(player);
     }
 
-    public void StartStage(int stageNumber, bool isFade)
+    public void StartStage(int chapterNumber, int stageNumber, DifficultyLevel difficulty, bool isFade)
     {
         ChapterData currentChapterData = GetCurrentChapterData();
         if (!currentChapterData.stages[stageNumber - 1].isUnlocked)
@@ -93,14 +92,24 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        // 상태 업데이트
+        CurrentChapter = chapterNumber;
         CurrentStage = stageNumber;
+        CurrentDifficulty = difficulty;
 
+
+        StageManager.Instance.StopAllCoroutines();
+        //맵 전환
         mapManager.ChangeMap(CurrentChapter, () =>
         {
+            //적 초기화
             stageManager.StartStage(CurrentChapter, CurrentStage, CurrentDifficulty);
         }, isFade);
 
+        //UI업데이트
+        uiManager.ResetStarUI();
         uiManager.UpdateUI(CurrentChapter, CurrentStage, CurrentDifficulty);
+
         SaveGame();
     }
 
@@ -155,6 +164,7 @@ public class GameManager : MonoBehaviour
 
                     // 하드 모드 해금 및 STAR UI 초기화
                     uiManager.UnlockHardMode();
+                    Debug.Log("하드모드 해금");
                     uiManager.ResetStarUI();
                 }
                 else
@@ -165,10 +175,10 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        SaveGame();
-        uiManager.UpdateUI(CurrentChapter, CurrentStage, CurrentDifficulty);
+        //SaveGame();
+        //uiManager.UpdateUI(CurrentChapter, CurrentStage, CurrentDifficulty);
         Debug.Log("다음 스테이지 이동");
-        StartStage(CurrentStage, true);
+        StartStage(CurrentChapter,CurrentStage, CurrentDifficulty,true);
     }
 
     public ChapterData GetCurrentChapterData()
@@ -193,12 +203,11 @@ public class GameManager : MonoBehaviour
         return saveData.progress;
     }
 
-    public void SetDifficulty(DifficultyLevel difficulty)
-    {
-        CurrentDifficulty = difficulty;
-        SaveGame();
-    }
-
+    //public void SetDifficulty(DifficultyLevel difficulty)
+    //{
+    //    CurrentDifficulty = difficulty;
+    //    SaveGame();
+    //}
 
     private void OnApplicationPause(bool pauseStatus)
     {

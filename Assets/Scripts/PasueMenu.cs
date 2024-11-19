@@ -19,10 +19,6 @@ public class PauseMenu : MonoBehaviour
     public Button ExitButton;
 
 
-    void Awake()
-    {
-    }
-
     void Start()
     {
         Button_BGM1.onClick.AddListener(() => OnBGMButtonClicked(0));

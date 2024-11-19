@@ -30,6 +30,8 @@ public class StageManager : MonoBehaviour
     //스테이지 시작에 따른 적 생성
     public void StartStage(int chapter, int stage, DifficultyLevel difficulty)
     {
+        enemyKillCount = 0;
+        StopAllCoroutines();
         //스테이지 시작 될 때 적 초기화
         ClearEnemies();
         //적 생성(챕터, 스테이지, 난이도에 따른)
@@ -98,7 +100,7 @@ public class StageManager : MonoBehaviour
     }
 
     //스테이지 시작 될 때 적 초기화
-    private void ClearEnemies()
+    public void ClearEnemies()
     {
         if (enemies != null)
         {

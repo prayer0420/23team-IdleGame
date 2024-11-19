@@ -28,6 +28,7 @@ public class MapManager : MonoBehaviour
 
     public void ChangeMap(int chapterNumber, Action callback, bool isFade)
     {
+        StopAllCoroutines();
         StartCoroutine(FadeOutAndIn(chapterNumber, callback, isFade));
     }
 

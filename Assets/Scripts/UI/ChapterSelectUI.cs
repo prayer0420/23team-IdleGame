@@ -5,7 +5,7 @@ using System;
 
 public class ChapterSelectUI : MonoBehaviour
 {
-    [SerializeField] private GameObject stageSelectPanel;
+    [SerializeField] private GameObject ChapterSelectPanel;
     [SerializeField] private Transform stageButtonsContainer;
     [SerializeField] private GameObject stageButtonPrefab;
     [SerializeField] private Button difficultyToggleButton;
@@ -14,26 +14,28 @@ public class ChapterSelectUI : MonoBehaviour
     private bool isHardMode = false;
     private ChapterButtonUI[] stageButtons;
 
-    private void Awake()
-    {
-
-    }
 
     private void Start()
     {
-        stageSelectPanel.SetActive(false);
+        ChapterSelectPanel.SetActive(false);
 
         difficultyToggleButton.onClick.AddListener(ToggleDifficulty);
         difficultyToggleButton.interactable = false;
-
-        UpdateDifficultyText();
     }
 
-    public void ToggleStageSelect()
+    //Open ChapterPnael
+    public void ToggleChapterPanelSelect()
     {
-        stageSelectPanel.SetActive(!stageSelectPanel.activeSelf);
-        if (stageSelectPanel.activeSelf)
+        ChapterSelectPanel.SetActive(!ChapterSelectPanel.activeSelf);
+        if (ChapterSelectPanel.activeSelf)
         {
+            Debug.Log("챕터 패널 창 열었을 때");
+            UpdateDifficultyText();
+            if (GameManager.Instance.CurrentDifficulty == DifficultyLevel.Hard)
+            {
+                //difficultyToggleButton 활성화
+                ActivedifficultyToggleButton();
+            }
             UpdateChapterUI();
         }
     }
@@ -46,7 +48,6 @@ public class ChapterSelectUI : MonoBehaviour
 
     private void InitializeChapterButtons()
     {
-        Debug.Log("stagebutton 초기화2");
         //버튼이 이미 있는경우엔 패스
         if (stageButtons != null && stageButtons.Length > 0)
         {
@@ -66,31 +67,40 @@ public class ChapterSelectUI : MonoBehaviour
 
     private void UpdateChapterButtonsForCurrentChapter()
     {
+
         if(stageButtons == null)
         {
-            Debug.Log("stagebutton 초기화1");
             InitializeChapterButtons();
         }
-
         var progressData = GameManager.Instance.GetGameProgress();
-        var currentChapters = isHardMode ? progressData.hardChapters : progressData.normalChapters;
-        int currentChapterIndex = GameManager.Instance.CurrentChapter - 1;
-        ChapterData currentChapter = currentChapters[currentChapterIndex];
+        
+        // isHard에 따라 사용할 챕터 배열을 선택
+        var chapters = isHardMode ? progressData.hardChapters : progressData.normalChapters;
 
         for (int i = 0; i < stageButtons.Length; i++)
         {
             ChapterButtonUI chapterButtonUI = stageButtons[i];
             chapterButtonUI.gameObject.SetActive(true);
-            chapterButtonUI.UpdateChapterButtonUI(i+1, progressData.normalChapters[i]);
-            chapterButtonUI.HandleStarUpdate(progressData.normalChapters[i],i);
+
+            DifficultyLevel difficulty = isHardMode ? DifficultyLevel.Hard : DifficultyLevel.Normal;
+            chapterButtonUI.UpdateChapterButtonUI(1, chapters[i], difficulty, i+1);
+            chapterButtonUI.HandleStarUpdate(chapters[i]);
+
+            //chapterButtonUI.UpdateChapterButtonUI(i + 1, chapters[i]);
+            //hapterButtonUI.HandleStarUpdate(i, chapters[i]);
         }
+
     }
 
+    //DifficultyButton눌렸을 때
     public void ToggleDifficulty()
     {
-        isHardMode = !isHardMode;
-        UpdateDifficultyText();
-        GameManager.Instance.SetDifficulty(isHardMode ? DifficultyLevel.Hard : DifficultyLevel.Normal);
+        isHardMode = !isHardMode; //처음 Normal -> Hard로 변경(false에서 true로)
+        UpdateDifficultyText(); //text도 바꿈
+
+        //토글한다고 게임에 영향을 주진말고, Chapter버튼을 눌렀을때 그때 영향을 줘야함
+        //GameManager.Instance.SetDifficulty(isHardMode ? DifficultyLevel.Hard : DifficultyLevel.Normal); 
+
         UpdateChapterUI();
     }
 
@@ -99,7 +109,7 @@ public class ChapterSelectUI : MonoBehaviour
         difficultyText.text = isHardMode ? "Hard Mode" : "Normal Mode";
     }
 
-    public void UnlockHardMode()
+    public void ActivedifficultyToggleButton()
     {
         difficultyToggleButton.interactable = true;
     }
