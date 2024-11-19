@@ -6,7 +6,7 @@ public class UIClick : MonoBehaviour, IPointerClickHandler
     public void OnPointerClick(PointerEventData eventData)
     {
         //SFX
-        AudioManager.Instance.PlaySFX(AudioManager.Instance.uiClickClip);
+        AudioManager.Instance.PlaySFX(AudioManager.Instance.UiClickClip);
         //TODO: VFX
     }
     

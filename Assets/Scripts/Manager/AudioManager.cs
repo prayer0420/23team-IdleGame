@@ -13,13 +13,11 @@ public class AudioManager : DontDestroySingleton<AudioManager>
     private int currentBGMIndex = 0;
 
     [Header("SFX Clips")]
-    public AudioClip attackClip;
-    public AudioClip playerHitClip;
-    public AudioClip itemPickupClip;
-    public AudioClip uiClickClip;
-    public AudioClip buildingClip;
-    public AudioClip gatherClip;
-    public AudioClip footstepClip;
+    public AudioClip PlayerAtackClip;
+    public AudioClip PlayerHitClip;
+    public AudioClip gachaClip;
+    public AudioClip UiClickClip;
+    //public AudioClip FootstepClip;
 
     [Header("Volume Settings")]
     [Range(0f, 1f)]

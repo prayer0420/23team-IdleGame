@@ -15,6 +15,8 @@ public class UIManager : MonoBehaviour
 
     [Header("Stage Select UI")]
     [SerializeField] private ChapterSelectUI chapterSelectUI;
+    [SerializeField] private Button nextStage;
+    [SerializeField] private Button prevStage;
 
     //public Action<int, bool> OnStarUdpate;
 
@@ -104,4 +106,38 @@ public class UIManager : MonoBehaviour
     {
         chapterSelectUI.ActivedifficultyToggleButton();
     }
+
+    public void NextStage()
+    {
+        //현재 챕터 그대로
+        int currentChapter = GameManager.Instance.CurrentChapter; 
+        //현재 난이도 그대로
+        DifficultyLevel difficultyLevel = GameManager.Instance.CurrentDifficulty;
+
+        int currentStage = GameManager.Instance.CurrentStage;
+        //챕터의 마지막 스테이지에서는 NextStage 못함(다음 챕터로 못감)
+        if(currentStage >= GameManager.Instance.GetCurrentChapterData().stages.Length)
+        {
+            return;
+        }
+        GameManager.Instance.StartStage(currentChapter, currentStage+1, difficultyLevel, true);
+    }
+
+
+    public void PrevStage()
+    {
+        //현재 챕터 그대로
+        int currentChapter = GameManager.Instance.CurrentChapter;
+        //현재 난이도 그대로
+        DifficultyLevel difficultyLevel = GameManager.Instance.CurrentDifficulty;
+
+        int currentStage = GameManager.Instance.CurrentStage;
+        //처음 스테이지에서는 PrevStage 못함(이전 챕터로 못감)
+        if (currentStage == 1)
+        {
+            return;
+        }
+        GameManager.Instance.StartStage(currentChapter, currentStage -1, difficultyLevel, true);
+    }
+
 }

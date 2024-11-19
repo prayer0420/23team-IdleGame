@@ -6,13 +6,13 @@ using System;
 public class ChapterSelectUI : MonoBehaviour
 {
     [SerializeField] private GameObject ChapterSelectPanel;
-    [SerializeField] private Transform stageButtonsContainer;
-    [SerializeField] private GameObject stageButtonPrefab;
+    [SerializeField] private Transform chapterButtonsContainer;
     [SerializeField] private Button difficultyToggleButton;
     [SerializeField] private TextMeshProUGUI difficultyText;
 
+    private GameObject chapterButtonPrefab;
     private bool isHardMode = false;
-    private ChapterButtonUI[] stageButtons;
+    private ChapterButtonUI[] chapterButtons;
 
 
     private void Start()
@@ -49,26 +49,30 @@ public class ChapterSelectUI : MonoBehaviour
     private void InitializeChapterButtons()
     {
         //버튼이 이미 있는경우엔 패스
-        if (stageButtons != null && stageButtons.Length > 0)
+        if (chapterButtons != null && chapterButtons.Length > 0)
         {
             return;
         }
         int maxStages = 3;
-        stageButtons = new ChapterButtonUI[maxStages];
+        chapterButtons = new ChapterButtonUI[maxStages];
+
+        string prefabPath = $"Prefabs/ChapterButton";
 
         for (int i = 0; i < maxStages; i++)
         {
-            GameObject buttonObj = Instantiate(stageButtonPrefab, stageButtonsContainer);
+            GameObject buttonPrefab = ResourceManager.Instance.LoadResource<GameObject>(prefabPath);
+            GameObject buttonObj = Instantiate(buttonPrefab, chapterButtonsContainer);
+
             ChapterButtonUI chapterButtonUI = buttonObj.GetComponent<ChapterButtonUI>();
             //chapterButtonUI.Initialize();
-            stageButtons[i] = chapterButtonUI;
+            chapterButtons[i] = chapterButtonUI;
         }
     }
 
     private void UpdateChapterButtonsForCurrentChapter()
     {
 
-        if(stageButtons == null)
+        if(chapterButtons == null)
         {
             InitializeChapterButtons();
         }
@@ -77,9 +81,9 @@ public class ChapterSelectUI : MonoBehaviour
         // isHard에 따라 사용할 챕터 배열을 선택
         var chapters = isHardMode ? progressData.hardChapters : progressData.normalChapters;
 
-        for (int i = 0; i < stageButtons.Length; i++)
+        for (int i = 0; i < chapterButtons.Length; i++)
         {
-            ChapterButtonUI chapterButtonUI = stageButtons[i];
+            ChapterButtonUI chapterButtonUI = chapterButtons[i];
             chapterButtonUI.gameObject.SetActive(true);
 
             DifficultyLevel difficulty = isHardMode ? DifficultyLevel.Hard : DifficultyLevel.Normal;
