@@ -95,7 +95,6 @@ public class Player : MonoBehaviour, TakeDamage
     public void OnDie()
     {
         StartCoroutine(nameof(WaitDieTime));
-       
     }
 
     
@@ -115,44 +114,18 @@ public class Player : MonoBehaviour, TakeDamage
 
     public void SetSaveData(PlayerSaveData data)
     {
-        //playerSaveData = data;
-        //
-        //// 플레이어의 스탯을 저장된 데이터로 설정
-        //Data.playerData.BaseDamage = playerSaveData.BaseDamage;
-        //Data.playerData.BaseAttackRate = playerSaveData.BaseAttackRate;
-        //Data.playerData.BaseMaxHealth = playerSaveData.BaseMaxHealth;
-        //Data.playerData.BaseAttackaDirection = playerSaveData.BaseAttackDirection;
-        //Data.playerData.BaseSpeed = playerSaveData.BaseSpeed;
-        //
-        //// 체력 시스템 업데이트
-        //healthSystem.player.SetMaxHealth(playerSaveData.BaseMaxHealth);
-        //healthSystem.player.currentValue = playerSaveData.CurrentHealth;
+        playerSaveData = data;
 
-        if (data == null)
-        {
-            Debug.LogError("PlayerSaveData가 null입니다.");
-            return;
-        }
+        // 플레이어의 스탯을 저장된 데이터로 설정
+        Data.playerData.BaseDamage = playerSaveData.BaseDamage;
+        Data.playerData.BaseAttackRate = playerSaveData.BaseAttackRate;
+        Data.playerData.BaseMaxHealth = playerSaveData.BaseMaxHealth;
+        Data.playerData.BaseAttackaDirection = playerSaveData.BaseAttackDirection;
+        Data.playerData.BaseSpeed = playerSaveData.BaseSpeed;
 
-        try
-        {
-            // 데이터 적용 로직
-            playerSaveData = data;
-
-            // 예: 체력 및 스탯 설정
-            Data.playerData.BaseDamage = data.BaseDamage;
-            Data.playerData.BaseAttackRate = data.BaseAttackRate;
-            Data.playerData.BaseMaxHealth = data.BaseMaxHealth;
-            Data.playerData.BaseAttackaDirection = data.BaseAttackDirection;
-            Data.playerData.BaseSpeed = data.BaseSpeed;
-
-            healthSystem.player.SetMaxHealth(data.BaseMaxHealth);
-            healthSystem.player.currentValue = data.CurrentHealth;
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"SetSaveData 중 오류 발생: {ex.Message}");
-        }
+        // 체력 시스템 업데이트
+        healthSystem.player.SetMaxHealth(playerSaveData.BaseMaxHealth);
+        healthSystem.player.currentValue = playerSaveData.CurrentHealth;
 
     }
 }

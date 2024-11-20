@@ -16,5 +16,5 @@ MonoBehaviour:
     <BaseDamage>k__BackingField: 10
     <BaseAttackRate>k__BackingField: 0.5
     <BaseMaxHealth>k__BackingField: 100
-    <BaseAttackaDirection>k__BackingField: 0.5
+    <BaseAttackaDirection>k__BackingField: 0.6
     <BaseSpeed>k__BackingField: 0
