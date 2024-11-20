@@ -13,6 +13,7 @@ public class Player : MonoBehaviour, TakeDamage
     [field: SerializeField] public PlayerSO Data { get;  set; }
 
     public Animator animator {  get; private set; }
+    public HealthSystem HealthSystem { get; private set; }
     private PlayerStateMachine stateMachine;
     public Rigidbody2D rb;
     public LayerMask targetMask;
@@ -29,6 +30,7 @@ public class Player : MonoBehaviour, TakeDamage
     void Start()
     {
         stateMachine.ChangeState(stateMachine.MoveState);
+        HealthSystem = GetComponent<HealthSystem>();
        
     }
 
@@ -59,6 +61,6 @@ public class Player : MonoBehaviour, TakeDamage
 
     public void TakeDamage(float damage)
     {
-        
+        HealthSystem.player.HealthDecrease(damage);
     }
 }

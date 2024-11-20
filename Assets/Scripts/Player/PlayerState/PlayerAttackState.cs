@@ -40,6 +40,7 @@ public class PlayerAttackState : PlayerBaseState
             lastAttackTime = Time.time;
             RaycastHit2D hit = Physics2D.Raycast(stateMachine.Player.transform.position, stateMachine.Player.transform.right, playerData.BaseAttackaDirection);
             isAttacking = true;
+
             hit.collider.GetComponent<TakeDamage>().TakeDamage(damage);
 
             Debug.Log("@@@@");

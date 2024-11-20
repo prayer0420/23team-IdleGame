@@ -9,6 +9,7 @@ public class Enumy : MonoBehaviour, TakeDamage
     [field: SerializeField] public EnumySO Data { get; set; }
 
     public Animator animator { get; private set; }
+    public HealthSystem healthSystem { get;  set; }
     private EnumyStateMachine enumyStateMachine;
     public Rigidbody2D rb;
     public LayerMask targetMask;
@@ -24,6 +25,7 @@ public class Enumy : MonoBehaviour, TakeDamage
     private void Start()
     {
         enumyStateMachine.ChangeState(enumyStateMachine.EnumyMove);
+        healthSystem = GetComponent<HealthSystem>();
     }
     private void Update()
     {
@@ -69,5 +71,6 @@ public class Enumy : MonoBehaviour, TakeDamage
 
     public void TakeDamage(float damage)
     {
+        healthSystem.enumy.HealthDecrease(damage);
     }
 }
