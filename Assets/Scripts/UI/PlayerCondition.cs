@@ -9,7 +9,7 @@ public class PlayerCondition : MonoBehaviour
     [SerializeField] private Slider slider;
     [SerializeField] private Player player;
 
-    private float currentValue;
+    public float currentValue;
     private float maxValue;
 
     private void Awake()

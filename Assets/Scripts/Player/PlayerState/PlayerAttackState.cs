@@ -17,7 +17,6 @@ public class PlayerAttackState : PlayerBaseState
 
     public override void Exit()
     {
-        
     }
 
     public override void Update()

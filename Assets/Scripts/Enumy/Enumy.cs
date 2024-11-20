@@ -10,11 +10,13 @@ public class Enumy : MonoBehaviour, TakeDamage
 
     public Animator animator { get; private set; }
     public HealthSystem healthSystem { get;  set; }
+    
     private EnumyStateMachine enumyStateMachine;
     public Rigidbody2D rb;
     public LayerMask targetMask;
     public Transform targetPlayer;
-    
+   
+
 
     private void Awake()
     {
@@ -72,5 +74,7 @@ public class Enumy : MonoBehaviour, TakeDamage
     public void TakeDamage(float damage)
     {
         healthSystem.enumy.HealthDecrease(damage);
+       
+       
     }
 }

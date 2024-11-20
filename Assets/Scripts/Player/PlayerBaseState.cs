@@ -46,7 +46,10 @@ public abstract class PlayerBaseState : IState
         stateMachine.Player.animator.SetTrigger(animationHash);
     }
 
-   
+    public void ResetTriggerAnimation(int animationHash)
+    {
+        stateMachine.Player.animator.ResetTrigger(animationHash);
+    }
 
 
 
