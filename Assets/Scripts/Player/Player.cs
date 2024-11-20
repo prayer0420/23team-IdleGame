@@ -14,7 +14,7 @@ public class Player : MonoBehaviour, TakeDamage
     [field: SerializeField] public PlayerSO Data { get;  set; }
 
     public Animator animator {  get; private set; }
-    public HealthSystem HealthSystem { get; private set; }
+    public HealthSystem healthSystem { get; private set; }
     public PlayerBaseState baseState {  get; set; }
     private PlayerStateMachine stateMachine;
     public Rigidbody2D rb;
@@ -33,14 +33,14 @@ public class Player : MonoBehaviour, TakeDamage
     void Start()
     {
         stateMachine.ChangeState(stateMachine.MoveState);
-        HealthSystem = GetComponent<HealthSystem>();
+        healthSystem = GetComponent<HealthSystem>();
        
     }
 
    
     void Update()
     {
-        if (HealthSystem.player.currentValue <= 0f) stateMachine.ChangeState(stateMachine.DieState);
+        if (healthSystem.player.currentValue <= 0f) stateMachine.ChangeState(stateMachine.DieState);
         AttackDirectionCheck();
         stateMachine.Update();
         
@@ -67,13 +67,9 @@ public class Player : MonoBehaviour, TakeDamage
 
     public void TakeDamage(float damage)
     {
-        Debug.Log(HealthSystem.player.currentValue);
+        Debug.Log(healthSystem.player.currentValue);
         
-
-
-        
-        
-        HealthSystem.player.HealthDecrease(damage);
+        healthSystem.player.HealthDecrease(damage);
         baseState.SetTriggerAnimation(stateMachine.Player.animationData.GetDamageParameterHash);
 
     }

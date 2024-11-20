@@ -4,10 +4,9 @@ using UnityEngine;
 
 public class PlayerDieState : PlayerBaseState
 {
-   private float waitDieTime;
-    public PlayerDieState(PlayerStateMachine stateMachine) : base(stateMachine)
-    {
-    }
+    public float waitDieTime;
+    public PlayerDieState(PlayerStateMachine stateMachine) : base(stateMachine) { }
+   
 
     public override void Enter()
     {

@@ -13,9 +13,13 @@ public class Enumy : MonoBehaviour, TakeDamage
     
     private EnumyStateMachine enumyStateMachine;
     public Rigidbody2D rb;
+    private SpriteRenderer rbSprite;
     public LayerMask targetMask;
     public Transform targetPlayer;
-   
+    public bool isDie = false;
+    private float fadeDuration = 2.0f;
+
+
 
 
     private void Awake()
@@ -23,6 +27,7 @@ public class Enumy : MonoBehaviour, TakeDamage
         animationData.Initialize();
         animator = GetComponentInChildren<Animator>();
          enumyStateMachine = new EnumyStateMachine(this);
+        rbSprite = GetComponentInChildren<SpriteRenderer>();
     }
     private void Start()
     {
@@ -31,23 +36,7 @@ public class Enumy : MonoBehaviour, TakeDamage
     }
     private void Update()
     {
-        // 레이의 시작 위치 (Enumy 객체의 위치)
-        Vector2 rayStart = enumyStateMachine.Enumy.transform.position;
-
-        // 레이의 방향 (Enumy 객체의 오른쪽 반대 방향)
-        Vector2 rayDirection = enumyStateMachine.Enumy.transform.right * -1;
-
-        // Raycast 시도
-        RaycastHit2D hit = Physics2D.Raycast(rayStart, rayDirection, Data.enumyData.AttackDirection, targetMask);
-
-        // 레이를 그리기
-        Debug.DrawRay(rayStart, rayDirection * Data.enumyData.AttackDirection, Color.red);
-
-        // 레이가 어떤 객체와 충돌했으면 충돌 정보를 로그로 출력
-        if (hit.collider != null)
-        {
-            Debug.Log("Hit " + hit.collider.name);
-        }
+        if (healthSystem.enumy.currentValue <= 0f) enumyStateMachine.ChangeState(enumyStateMachine.EnumyDie);
         AttackDirectionCheck();
         enumyStateMachine.Update();
 
@@ -65,7 +54,7 @@ public class Enumy : MonoBehaviour, TakeDamage
         {
             enumyStateMachine.ChangeState(enumyStateMachine.EnumyMove);
         }
-        else
+        else if (hit.collider!= null && !isDie)
         {
             enumyStateMachine.ChangeState(enumyStateMachine.EnumyAttack);
         }
@@ -76,5 +65,31 @@ public class Enumy : MonoBehaviour, TakeDamage
         healthSystem.enumy.HealthDecrease(damage);
        
        
+    }
+
+    public void OnDie()
+    {
+        gameObject.layer = LayerMask.NameToLayer("Default");
+        StartCoroutine(nameof(FadeOutAndDie));
+    }
+
+    private IEnumerator FadeOutAndDie()
+    {
+        float elapsedTime = 0f;  // 경과 시간
+
+        Color startColor = rbSprite.color;
+
+        while (elapsedTime < fadeDuration)
+        {
+            float alpha = Mathf.Lerp(startColor.a, 0f, elapsedTime / fadeDuration);  // 알파값을 점차 0으로 줄임
+            rbSprite.color = new Color(startColor.r, startColor.g, startColor.b, alpha);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;  
+        }
+
+        rbSprite.color = new Color(startColor.r, startColor.g, startColor.b, 0f);
+
+        Destroy(gameObject);  
     }
 }
