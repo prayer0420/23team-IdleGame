@@ -275,7 +275,7 @@ GameObject:
   - component: {fileID: 9034466463677154525}
   - component: {fileID: 5572661089271951419}
   m_Layer: 7
-  m_Name: Enemy_Chapter3_Boos_Hard
+  m_Name: Enemy_Chapter3_Boss
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -291,7 +291,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 6.15, y: -0.07547183, z: -0.070064954}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3913541350405007879}
@@ -316,7 +316,7 @@ MonoBehaviour:
     attackParameterName: Attack
     getDamageParameterName: GetDamage
     dieParameterName: Die
-  <Data>k__BackingField: {fileID: 11400000, guid: 8c89c73c55a77c84492292e8c591e064, type: 2}
+  <Data>k__BackingField: {fileID: 11400000, guid: 21e7d50cbf53be24eacb2267d472f550, type: 2}
   <monsterType>k__BackingField: 0
   rb: {fileID: 9034466463677154525}
   targetMask:
@@ -561,7 +561,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 590b73e132435194da7d40dc8a3816f0, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b8fd21ad16123364aaee0da8f1b3746b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0

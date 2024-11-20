@@ -31,6 +31,8 @@ public class GameManager : MonoBehaviour
 
     public bool isPuase;
 
+    private Vector2 PlayerInitPosition = new Vector2(-5.72f, -1f);
+
     private void Awake()
     {
         if (Instance == null)
@@ -73,7 +75,6 @@ public class GameManager : MonoBehaviour
             CreatePlayer(); 
         }
 
-
         CurrentChapter = saveData.currentChapter;
         CurrentStage = saveData.currentStage;
         CurrentDifficulty = saveData.difficulty;
@@ -102,7 +103,7 @@ public class GameManager : MonoBehaviour
         GameObject playerPrefab = ResourceManager.Instance.LoadResource<GameObject>("Prefabs/Player");
         if (playerPrefab != null)
         {
-            GameObject playerObj = Instantiate(playerPrefab, new Vector2(-1.5f, -1f), Quaternion.identity);
+            GameObject playerObj = Instantiate(playerPrefab, PlayerInitPosition, Quaternion.identity);
             player = playerObj.GetComponent<Player>();
         }
     }
@@ -115,19 +116,20 @@ public class GameManager : MonoBehaviour
             Debug.Log("아직 잠겨있는 스테이지입니다.");
             return;
         }
-
         // 상태 업데이트
         CurrentChapter = chapterNumber;
         CurrentStage = stageNumber;
         CurrentDifficulty = difficulty;
 
+        //플레이어 위치 초기화
+        player.transform.position = PlayerInitPosition;
 
-        StageManager.Instance.StopAllCoroutines();
+        stageManager.StartStage(CurrentChapter, CurrentStage, CurrentDifficulty);
         //맵 전환
         mapManager.ChangeMap(CurrentChapter, () =>
         {
             //적 초기화
-            stageManager.StartStage(CurrentChapter, CurrentStage, CurrentDifficulty);
+            //stageManager.StartStage(CurrentChapter, CurrentStage, CurrentDifficulty);
         }, isFade);
 
         //UI업데이트
@@ -144,7 +146,6 @@ public class GameManager : MonoBehaviour
         // 스테이지 데이타에서 현재 스테이지를 클리어로 표시
         StageData currentStageData = currentChapterData.stages[CurrentStage - 1];
         currentStageData.isCleared = true;
-
 
         // STAR 업데이트
         OnStarUpdate?.Invoke(CurrentStage,true);
@@ -199,8 +200,6 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        //SaveGame();
-        //uiManager.UpdateUI(CurrentChapter, CurrentStage, CurrentDifficulty);
         Debug.Log("다음 스테이지 이동");
         StartStage(CurrentChapter,CurrentStage, CurrentDifficulty,true);
     }

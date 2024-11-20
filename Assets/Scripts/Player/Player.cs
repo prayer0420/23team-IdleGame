@@ -28,6 +28,8 @@ public class Player : MonoBehaviour, TakeDamage
 
     public PlayerSaveData playerSaveData;
 
+    public Action PlayerOnDeath;
+
     private void Awake()
     {
         healthSystem = GetComponent<HealthSystem>();
@@ -86,8 +88,6 @@ public class Player : MonoBehaviour, TakeDamage
 
     public void TakeDamage(float damage)
     {
-        //Debug.Log(healthSystem.player.currentValue);
-        
         healthSystem.player.HealthDecrease(damage);
         StartCoroutine(nameof(BlinknomalDamageColor));
 
@@ -102,8 +102,9 @@ public class Player : MonoBehaviour, TakeDamage
     {
         yield return new WaitForSeconds(2.0f);
 
-        Destroy(gameObject);
-
+        //플레이어 죽음 알림
+        PlayerOnDeath?.Invoke();
+        //Destroy(gameObject);
     }
     private IEnumerator BlinknomalDamageColor()
     {

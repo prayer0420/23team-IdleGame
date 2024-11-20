@@ -32,9 +32,9 @@ public class StageManager : MonoBehaviour
     public void StartStage(int chapter, int stage, DifficultyLevel difficulty)
     {
         enemyKillCount = 0;
-        StopAllCoroutines();
         //스테이지 시작 될 때 적 초기화
         ClearEnemies();
+        StopAllCoroutines();
         //적 생성(챕터, 스테이지, 난이도에 따른)
         StartCoroutine(SpawnEnemies(chapter, stage, difficulty));
         //TODO: Player달려오기
@@ -42,7 +42,7 @@ public class StageManager : MonoBehaviour
 
     private IEnumerator SpawnEnemies(int chapter, int stage, DifficultyLevel difficulty)
     {
-        //보스 스테이지
+        // 보스 스테이지
         if (stage == 3)
         {
             string prefabPath = $"Prefabs/Enemy/Enemy_Chapter{chapter}_Boss";
@@ -58,26 +58,29 @@ public class StageManager : MonoBehaviour
 
             GameObject bossObj = Instantiate(bossPrefab);
             Enumy boss = bossObj.GetComponent<Enumy>();
-            boss.monsterType = MonsterType.normal; //보스는 노말타입
+            boss.monsterType = MonsterType.normal; // 보스는 일반 타입
             boss.OnDeath += (enemy) => HandleEnemyDeath(enemy);
             bossObj.transform.position = GetRandomSpawnPosition();
+
             enemies = new Enumy[1];
             enemies[0] = boss;
         }
-        else //일반적인 스테이지
+        else // 일반적인 스테이지
         {
             int normalEnemyCount = 5;
             int poisonEnemyCount = 0;
-            
-            if(chapter>=2)
+
+            if (chapter >= 2)
             {
                 normalEnemyCount = 3;
                 poisonEnemyCount = 2;
             }
 
-            List<Enumy> enemyList = new List<Enumy>();
+            int totalEnemyCount = normalEnemyCount + poisonEnemyCount;
+            enemies = new Enumy[totalEnemyCount];
+            int enemyIndex = 0;
 
-            //일반몬스터
+            // 일반 몬스터 생성
             string normalPrefabPath = $"Prefabs/Enemy/Enemy_Chapter{chapter}_Normal";
             if (difficulty == DifficultyLevel.Hard)
             {
@@ -95,11 +98,13 @@ public class StageManager : MonoBehaviour
                 enemy.monsterType = MonsterType.normal;
                 enemy.OnDeath += (e) => HandleEnemyDeath(e);
                 enemyObj.transform.position = GetRandomSpawnPosition();
-                enemyList.Add(enemy);
+
+                enemies[enemyIndex++] = enemy;
+
                 yield return new WaitForSeconds(2f);
             }
 
-            //독 몬스터도 생성
+            // 독 몬스터 생성
             if (poisonEnemyCount > 0)
             {
                 string poisonPrefabPath = $"Prefabs/Enemy/Enemy_Chapter{chapter}_Poison";
@@ -119,12 +124,12 @@ public class StageManager : MonoBehaviour
                     enemy.monsterType = MonsterType.poison;
                     enemy.OnDeath += (e) => HandleEnemyDeath(e);
                     enemyObj.transform.position = GetRandomSpawnPosition();
-                    enemyList.Add(enemy);
+
+                    enemies[enemyIndex++] = enemy;
+
                     yield return new WaitForSeconds(2f);
                 }
             }
-
-            enemies = enemyList.ToArray();
         }
     }
 
@@ -147,7 +152,7 @@ public class StageManager : MonoBehaviour
     {
         enemyKillCount++;
         Debug.Log($"현재 몬스터 {enemyKillCount} 마리 처치, 처치해야할 몬스터 {enemies.Length}마리");
-        if(enemyKillCount == enemies.Length)
+        if(enemyKillCount >= enemies.Length)
         {
             enemyKillCount = 0;
             return true;
@@ -168,6 +173,7 @@ public class StageManager : MonoBehaviour
                 }
             }
         }
+        Debug.Log("적 모두 파괴");
     }
 
     private Vector2 GetRandomSpawnPosition()
