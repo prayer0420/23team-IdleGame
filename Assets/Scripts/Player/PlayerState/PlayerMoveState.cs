@@ -41,8 +41,8 @@ public class PlayerMoveState : PlayerBaseState
         if (Vector2.Distance(stateMachine.Player.transform.position, targetPosition) > 0.1f)
         {
             // 이동
+            Debug.Log("이동?");
             stateMachine.Player.rb.MovePosition(playerPosition + move);
-
         }
         else return;
     }

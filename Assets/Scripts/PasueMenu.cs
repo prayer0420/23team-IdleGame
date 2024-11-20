@@ -32,6 +32,14 @@ public class PauseMenu : MonoBehaviour
         BaseUI.SetActive(false);
     }
 
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            HandleOnPause();
+        }
+    }
+
     public void HandleOnPause()
     {
         if (!GameManager.Instance.isPause)

@@ -7,10 +7,10 @@ public class TestEnemy : MonoBehaviour, ICharacter
     public float Speed { get; set; }
     public bool IsAlive => HP > 0;
     private Rigidbody2D rb;
-    private TestPlayer player;
+    private Player player;
     public Action OnDeath { get; set; }
 
-    public void InitializeEnemy(TestPlayer targetPlayer)
+    public void InitializeEnemy(Player targetPlayer)
     {
         HP = 30;
         Speed = 1000f;

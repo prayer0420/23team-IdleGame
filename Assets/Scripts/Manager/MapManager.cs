@@ -38,8 +38,14 @@ public class MapManager : MonoBehaviour
         {
             Destroy(currentMap);
         }
-        
-        string mapPath = $"Prefabs/Background_Chapter{chapterNumber}";
+
+        string mapPath = $"Prefabs/Background/Background_Chapter{chapterNumber}";
+
+        if (GameManager.Instance.CurrentDifficulty== DifficultyLevel.Hard)
+        {
+            //하드모드의 몬스터는 이름 뒤에 _Hard붙이기
+            mapPath += "_Hard";
+        }
         GameObject backgroundPrefab = ResourceManager.Instance.LoadResource<GameObject>(mapPath);
         if (backgroundPrefab != null)
         {
