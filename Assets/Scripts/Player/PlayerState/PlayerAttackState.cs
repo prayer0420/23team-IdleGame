@@ -23,7 +23,7 @@ public class PlayerAttackState : PlayerBaseState
     public override void Update()
     {
         OnAttack();
-        Debug.Log(enemyQueue.Count);
+        
       
     }
     public override void FixedUpdate()
@@ -43,7 +43,6 @@ public class PlayerAttackState : PlayerBaseState
             SetTriggerAnimation(stateMachine.Player.animationData.AttackParameterHash);
                 RaycastHit2D hit = Physics2D.Raycast(stateMachine.Player.transform.position, stateMachine.Player.transform.right, playerData.BaseAttackaDirection,stateMachine.Player.targetMask);
 
-                //hit.collider.GetComponent<TakeDamage>().TakeDamage(damage);
                 if (hit.collider != null)
                 {
                     Enumy enumy = hit.collider.GetComponent<Enumy>();
@@ -54,9 +53,7 @@ public class PlayerAttackState : PlayerBaseState
                     }
                 }
             }
-           
-
-            Debug.Log("@@@@");
+            //Debug.Log("@@@@");
         }
         else isAttacking = false;
         

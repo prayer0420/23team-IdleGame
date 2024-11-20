@@ -52,7 +52,7 @@ public class SaveManager : MonoBehaviour
         {
             string json = JsonUtility.ToJson(saveData, true);
             File.WriteAllText(SavePath, json);
-            Debug.Log("게임 저장");
+            //Debug.Log("게임 저장");
         }
         catch (System.Exception e)
         {

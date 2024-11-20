@@ -50,8 +50,6 @@ public class Player : MonoBehaviour, TakeDamage
     void Start()
     {
         stateMachine.ChangeState(stateMachine.MoveState);
-
-       
     }
 
    
@@ -88,7 +86,7 @@ public class Player : MonoBehaviour, TakeDamage
 
     public void TakeDamage(float damage)
     {
-        Debug.Log(healthSystem.player.currentValue);
+        //Debug.Log(healthSystem.player.currentValue);
         
         healthSystem.player.HealthDecrease(damage);
         StartCoroutine(nameof(BlinknomalDamageColor));

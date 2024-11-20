@@ -91,6 +91,7 @@ public class StageManager : MonoBehaviour
     private bool AreAllEnemiesDead()
     {
         enemyKillCount++;
+        Debug.Log($"현재 몬스터 {enemyKillCount} 마리 처치, 처치해야할 몬스터 {enemies.Length}마리");
         if(enemyKillCount == enemies.Length)
         {
             enemyKillCount = 0;

@@ -113,7 +113,6 @@ public class InventoryData
     }
 }
 
-
 [Serializable]
 public class ItemSlotData
 {

@@ -15,6 +15,6 @@ MonoBehaviour:
   itemID: 11
   itemSprite: {fileID: 21300000, guid: 789e518168d493d4396ec984b1b5bcb3, type: 3}
   itemName: sword
-  itemType: 4
+  itemType: 5
   itemStat: 10
   itemDescription: this is sword

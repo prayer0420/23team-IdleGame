@@ -27,12 +27,6 @@ public class ItemSlot : MonoBehaviour
             Color color = new Color(255, 255, 255, 255);
             image.color = color;
         }
-        else
-        {
-            image.sprite = null;
-            Color color = new Color(255, 255, 255, 0);
-            image.color = color;
-        }
     }
 
 

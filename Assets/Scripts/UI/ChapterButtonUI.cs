@@ -56,15 +56,6 @@ public class ChapterButtonUI : MonoBehaviour
 
         // ChapterSelectUI 패널 닫기
         UIManager.Instance.ToggleChapterSelect();
-
-        //챕터 버튼을 눌렀을때 해야할 일들
-        //1. 맵 전환
-        //2. 적 초기화 및 생성
-        //3. Top UI, ChapterSelectUI 업데이트
-        //4. 게임의 정보 업데이트
-        //5. 어떤 정보를 기반으로 ? 이 ChapterButtonUI에 난이도, 챕터, 스테이지에 대한 정보가 있어야함
-        //6. 이러한 정보를 이 ChapterButtonUI에 어떻게 저장할지가 고민
-        //7. GameManager와 연계해서 코드 수정 필요
     }
 
 }

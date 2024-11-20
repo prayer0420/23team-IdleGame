@@ -15,6 +15,6 @@ MonoBehaviour:
   itemID: 1
   itemSprite: {fileID: 21300000, guid: b53db54545fcd5747b7ba5e450c07baf, type: 3}
   itemName: helmet1
-  itemType: 0
+  itemType: 1
   itemStat: 10
   itemDescription: this is helmet1

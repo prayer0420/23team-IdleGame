@@ -39,11 +39,11 @@ public class Inventory : MonoBehaviour
             ItemSlot slot = itemSlots[i];
             string itemID = slot.item != null ? slot.item.itemID : null;
             ItemSlotData slotData = new ItemSlotData(slot.itemType, itemID);
+
             data.itemSlots[i] = slotData;
         }
         return data;
     }
-
 
     public void SetInventoryData(InventoryData data)
     {
