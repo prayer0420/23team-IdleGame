@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52713438ff97e664bad384aa37ca1f25, type: 3}
   m_Name: weapon1
   m_EditorClassIdentifier: 
-  itemID: 11
+  itemID: 12
   itemSprite: {fileID: 21300000, guid: 789e518168d493d4396ec984b1b5bcb3, type: 3}
-  itemName: sword
+  itemName: "\uC885\uC790\uC758 \uAC80"
   itemType: 5
-  itemStat: 10
-  itemDescription: this is sword
+  itemStat: 20
+  itemDescription: "\uC885\uC790\uAC00 \uCC29\uC6A9\uD558\uB294 \uAC80"
