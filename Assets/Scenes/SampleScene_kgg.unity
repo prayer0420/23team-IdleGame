@@ -323,6 +323,10 @@ PrefabInstance:
       propertyPath: targetPlayer
       value: 
       objectReference: {fileID: 1744495263}
+    - target: {fileID: 4411233252121874043, guid: d37dcf24de73d584c98054222c0a6da8, type: 3}
+      propertyPath: <monsterType>k__BackingField
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4537790664541408805, guid: d37dcf24de73d584c98054222c0a6da8, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -459,6 +463,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3768054592070376063, guid: b121fef087393dd40b702b3be1c4c432, type: 3}
+      propertyPath: <enumy>k__BackingField
+      value: 
+      objectReference: {fileID: 11400000, guid: 8211245b9be721348b3a6c7fa3f943f3, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
