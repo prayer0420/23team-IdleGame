@@ -8,6 +8,7 @@ public class EnumyStateMachine : StateMachine
 
     public EnumyMove EnumyMove { get;}
     public EnumyAttack EnumyAttack { get;}
+    public EnumyPoisonAttack EnumyPoisonAttack { get; }
     public EnumyDie EnumyDie { get;}
 
     public EnumyStateMachine(Enumy enumy)
@@ -16,6 +17,7 @@ public class EnumyStateMachine : StateMachine
         
         EnumyMove = new EnumyMove(this);
         EnumyAttack = new EnumyAttack(this);
+        EnumyPoisonAttack = new EnumyPoisonAttack(this);
         EnumyDie = new EnumyDie(this);
     }
 }

@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class EnumyBaseSt : IState
+public abstract class EnumyBaseState : IState
 {
     protected EnumyStateMachine stateMachine;
     protected readonly EnumyData enumyData;
 
     
 
-    protected EnumyBaseSt(EnumyStateMachine stateMachine)
+    protected EnumyBaseState(EnumyStateMachine stateMachine)
     {
         this.stateMachine = stateMachine;
         enumyData = stateMachine.Enumy.Data.enumyData;

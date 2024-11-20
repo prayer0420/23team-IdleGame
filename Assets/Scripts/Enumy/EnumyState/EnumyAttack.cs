@@ -1,8 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Burst.CompilerServices;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
-public class EnumyAttack : EnumyBaseSt
+public class EnumyAttack : EnumyBaseState
 {
     public EnumyAttack(EnumyStateMachine stateMachine) : base(stateMachine) { }
 
@@ -10,10 +13,10 @@ public class EnumyAttack : EnumyBaseSt
    
     float damage;
     public bool isAttacking = false;
+   
     public override void Enter()
     {
        damage = enumyData.Damage;
-        Debug.Log("!!!");
     }
 
     public override void Exit()
@@ -27,8 +30,9 @@ public class EnumyAttack : EnumyBaseSt
 
     public override void Update()
     {
-       
+
         OnAttack();
+
         
     }
 
@@ -41,15 +45,12 @@ public class EnumyAttack : EnumyBaseSt
             lastAttackTime = Time.time;
             if(isAttacking)
             {
+                    SetTriggerAnimation(stateMachine.Enumy.animationData.AttackParameterHash);
+                    RaycastHit2D hit = Physics2D.Raycast(stateMachine.Enumy.transform.position, stateMachine.Enumy.transform.right * -1, enumyData.AttackDirection, stateMachine.Enumy.targetMask);
+
+                    hit.collider.GetComponent<TakeDamage>().TakeDamage(damage);
                
-                SetTriggerAnimation(stateMachine.Enumy.animationData.AttackParameterHash);
-                RaycastHit2D hit = Physics2D.Raycast(stateMachine.Enumy.transform.position, stateMachine.Enumy.transform.right * -1, enumyData.AttackDirection, stateMachine.Enumy.targetMask);
-
-                Debug.Log(hit.collider.gameObject.name);
-                hit.collider.GetComponent<TakeDamage>().TakeDamage(damage);
             }
-           
-
             
         }
         else isAttacking = false;

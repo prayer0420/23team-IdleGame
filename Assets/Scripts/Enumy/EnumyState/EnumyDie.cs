@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnumyDie : EnumyBaseSt
+public class EnumyDie : EnumyBaseState
 {
     public EnumyDie(EnumyStateMachine stateMachine) : base(stateMachine) { }
 

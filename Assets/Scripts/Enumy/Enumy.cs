@@ -2,11 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum MonsterType
+{
+    normal,
+    poison
+}
 public class Enumy : MonoBehaviour, TakeDamage
 {
     [field: Header("Animation")]
     [field: SerializeField] public AnimationData animationData;
     [field: SerializeField] public EnumySO Data { get; set; }
+    [field: SerializeField] public MonsterType monsterType {  get; set; }
 
     public Animator animator { get; private set; }
     public HealthSystem healthSystem { get; set; }
@@ -18,7 +24,7 @@ public class Enumy : MonoBehaviour, TakeDamage
     public Transform targetPlayer;
     public bool isDie = false;
     private float fadeDuration = 2.0f;
-    public Color nomalDamageColor = Color.red;  // 데미지 시 색상
+    public Color normalDamageColor = Color.red;  // 데미지 시 색상
     public float blinkDuration = 0.1f;  // 깜박이는 시간
 
 
@@ -59,7 +65,9 @@ public class Enumy : MonoBehaviour, TakeDamage
         }
         else if (hit.collider != null && !isDie)
         {
-            enumyStateMachine.ChangeState(enumyStateMachine.EnumyAttack);
+            if(monsterType == MonsterType.normal) enumyStateMachine.ChangeState(enumyStateMachine.EnumyAttack);
+            else enumyStateMachine.ChangeState(enumyStateMachine.EnumyPoisonAttack);
+
         }
     }
 
@@ -104,9 +112,10 @@ public class Enumy : MonoBehaviour, TakeDamage
 
     private IEnumerator BlinkDamageColor()
     {
-        rbSprite.color = nomalDamageColor;
+        rbSprite.color = normalDamageColor;
         yield return new WaitForSeconds(blinkDuration);
         rbSprite.color = Color.white;
     }
 
+   
 }

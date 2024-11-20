@@ -14,7 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <enumyData>k__BackingField:
     <Damage>k__BackingField: 25
-    <AttackRate>k__BackingField: 2
-    <AttackDirection>k__BackingField: 0.3
+    <AttackRate>k__BackingField: 5
+    <AttackDirection>k__BackingField: 4
     <MaxHealth>k__BackingField: 50
     <Speed>k__BackingField: 1
+    poisonDuration: 8
+    poisonInterval: 2
+    poisonDamage: 5

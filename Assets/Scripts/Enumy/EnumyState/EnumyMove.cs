@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnumyMove : EnumyBaseSt
+public class EnumyMove : EnumyBaseState
 {
     public EnumyMove(EnumyStateMachine stateMachine) : base(stateMachine) { }
 
