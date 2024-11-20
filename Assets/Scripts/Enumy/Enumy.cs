@@ -19,7 +19,7 @@ public class Enumy : MonoBehaviour, TakeDamage
     private void Awake()
     {
         animationData.Initialize();
-        animator = GetComponent<Animator>();
+        animator = GetComponentInChildren<Animator>();
          enumyStateMachine = new EnumyStateMachine(this);
     }
     private void Start()

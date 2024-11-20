@@ -39,8 +39,9 @@ public class EnumyAttack : EnumyBaseSt
         {
 
             lastAttackTime = Time.time;
-            RaycastHit2D hit = Physics2D.Raycast(stateMachine.Enumy.transform.position, stateMachine.Enumy.transform.right * -1, enumyData.AttackDirection);
+            RaycastHit2D hit = Physics2D.Raycast(stateMachine.Enumy.transform.position, stateMachine.Enumy.transform.right * -1, enumyData.AttackDirection,stateMachine.Enumy.targetMask);
             isAttacking = true;
+            Debug.Log(hit.collider.gameObject.name);
             hit.collider.GetComponent<TakeDamage>().TakeDamage(damage);
 
             

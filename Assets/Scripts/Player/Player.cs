@@ -23,7 +23,7 @@ public class Player : MonoBehaviour, TakeDamage
     private void Awake()
     {
         animationData.Initialize();
-        animator = GetComponent<Animator>();
+        animator = GetComponentInChildren<Animator>();
         stateMachine = new PlayerStateMachine(this);
       
     }
