@@ -6,6 +6,7 @@ using UnityEngine;
 public interface TakeDamage
 {
     public void TakeDamage(float damage);
+    public void ApplyPoisonDamage(float damage);
 }
 public class Player : MonoBehaviour, TakeDamage
 {
@@ -15,12 +16,16 @@ public class Player : MonoBehaviour, TakeDamage
 
     public Animator animator {  get; private set; }
     public HealthSystem healthSystem { get; private set; }
-    public PlayerBaseState baseState {  get; set; }
     private PlayerStateMachine stateMachine;
     public Rigidbody2D rb;
     public LayerMask targetMask;
+    private SpriteRenderer spriteRenderer;
     public bool isDie = false;
-    
+    private bool isPoisoned = false;  // 독 상태 여부
+    public Color nomalDamageColor = Color.red;  // 데미지 시 색상
+    public Color poisonColor = new Color(0.5f, 0f, 0.5f);
+    public float blinkDuration = 0.1f;  // 깜박이는 시간
+
 
 
     private void Awake()
@@ -28,6 +33,7 @@ public class Player : MonoBehaviour, TakeDamage
         animationData.Initialize();
         animator = GetComponentInChildren<Animator>();
         stateMachine = new PlayerStateMachine(this);
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
       
     }
     void Start()
@@ -64,13 +70,17 @@ public class Player : MonoBehaviour, TakeDamage
         }
        
     }
+    public void ApplyPoisonDamage(float damage)
+    {
+        healthSystem.player.HealthDecrease(damage);
+    }
 
     public void TakeDamage(float damage)
     {
         Debug.Log(healthSystem.player.currentValue);
         
         healthSystem.player.HealthDecrease(damage);
-        baseState.SetTriggerAnimation(stateMachine.Player.animationData.GetDamageParameterHash);
+        StartCoroutine(nameof(BlinknomalDamageColor));
 
     }
     public void OnDie()
@@ -78,8 +88,8 @@ public class Player : MonoBehaviour, TakeDamage
         StartCoroutine(nameof(WaitDieTime));
        
     }
-    
 
+    
     public IEnumerator WaitDieTime()
     {
         yield return new WaitForSeconds(2.0f);
@@ -87,4 +97,13 @@ public class Player : MonoBehaviour, TakeDamage
         Destroy(gameObject);
 
     }
+    private IEnumerator BlinknomalDamageColor()
+    {
+       spriteRenderer.color = nomalDamageColor;
+        yield return new WaitForSeconds(blinkDuration);
+        spriteRenderer.color = Color.white;
+    }
+
+    
+
 }
