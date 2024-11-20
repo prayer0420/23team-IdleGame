@@ -17,16 +17,12 @@ public class PlayerAttackState : PlayerBaseState
 
     public override void Exit()
     {
-        
     }
 
     public override void Update()
     {
         OnAttack();
-        if (isAttacking)
-        {
-            SetTriggerAnimation(stateMachine.Player.animationData.AttackParameterHash);
-        }
+      
     }
     public override void FixedUpdate()
     {
@@ -36,10 +32,19 @@ public class PlayerAttackState : PlayerBaseState
     {
         if (Time.time - lastAttackTime > playerData.BaseAttackRate)
         {
-            lastAttackTime = Time.time;
-            RaycastHit2D hit = Physics2D.Raycast(stateMachine.Player.transform.position, stateMachine.Player.transform.right, playerData.BaseAttackaDirection);
+
             isAttacking = true;
-            hit.collider.GetComponent<TakeDamage>().TakeDamage(damage);
+
+            lastAttackTime = Time.time;
+            if (isAttacking) 
+            {
+            SetTriggerAnimation(stateMachine.Player.animationData.AttackParameterHash);
+                RaycastHit2D hit = Physics2D.Raycast(stateMachine.Player.transform.position, stateMachine.Player.transform.right, playerData.BaseAttackaDirection,stateMachine.Player.targetMask);
+
+                hit.collider.GetComponent<TakeDamage>().TakeDamage(damage);
+            }
+           
+
             Debug.Log("@@@@");
         }
         else isAttacking = false;

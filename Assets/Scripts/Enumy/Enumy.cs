@@ -9,47 +9,41 @@ public class Enumy : MonoBehaviour, TakeDamage
     [field: SerializeField] public EnumySO Data { get; set; }
 
     public Animator animator { get; private set; }
+    public HealthSystem healthSystem { get; set; }
+
     private EnumyStateMachine enumyStateMachine;
     public Rigidbody2D rb;
+    private SpriteRenderer rbSprite;
     public LayerMask targetMask;
-    public Player targetPlayer;
+    public Transform targetPlayer;
+    public bool isDie = false;
+    private float fadeDuration = 2.0f;
+    public Color nomalDamageColor = Color.red;  // 데미지 시 색상
+    public float blinkDuration = 0.1f;  // 깜박이는 시간
+
+
+
 
 
     private void Awake()
     {
         animationData.Initialize();
-        animator = GetComponent<Animator>();
+        animator = GetComponentInChildren<Animator>();
         enumyStateMachine = new EnumyStateMachine(this);
-        rb = GetComponent<Rigidbody2D>();
+        rbSprite = GetComponentInChildren<SpriteRenderer>();
     }
     private void Start()
     {
         enumyStateMachine.ChangeState(enumyStateMachine.EnumyMove);
-       targetPlayer = GameManager.Instance.player;
+        healthSystem = GetComponent<HealthSystem>();
     }
     private void Update()
     {
-        // 레이의 시작 위치 (Enumy 객체의 위치)
-        Vector2 rayStart = enumyStateMachine.Enumy.transform.position;
-
-        // 레이의 방향 (Enumy 객체의 오른쪽 반대 방향)
-        Vector2 rayDirection = enumyStateMachine.Enumy.transform.right * -1;
-
-        // Raycast 시도
-        RaycastHit2D hit = Physics2D.Raycast(rayStart, rayDirection, Data.enumyData.AttackDirection, targetMask);
-
-        // 레이를 그리기
-        Debug.DrawRay(rayStart, rayDirection * Data.enumyData.AttackDirection, Color.red);
-
-        // 레이가 어떤 객체와 충돌했으면 충돌 정보를 로그로 출력
-        if (hit.collider != null)
-        {
-            Debug.Log("Hit " + hit.collider.name);
-        }
+        if (healthSystem.enumy.currentValue <= 0f) enumyStateMachine.ChangeState(enumyStateMachine.EnumyDie);
         AttackDirectionCheck();
         enumyStateMachine.Update();
 
-        
+
     }
     private void FixedUpdate()
     {
@@ -63,13 +57,56 @@ public class Enumy : MonoBehaviour, TakeDamage
         {
             enumyStateMachine.ChangeState(enumyStateMachine.EnumyMove);
         }
-        else
+        else if (hit.collider != null && !isDie)
         {
             enumyStateMachine.ChangeState(enumyStateMachine.EnumyAttack);
         }
     }
 
+    public void ApplyPoisonDamage(float damage)
+    {
+
+    }
     public void TakeDamage(float damage)
     {
+        healthSystem.enumy.HealthDecrease(damage);
+
+        StartCoroutine(nameof(BlinkDamageColor));
     }
+
+    public void OnDie()
+    {
+        gameObject.layer = LayerMask.NameToLayer("Default");
+        StartCoroutine(nameof(FadeOutAndDie));
+
+
+    }
+
+    private IEnumerator FadeOutAndDie()
+    {
+        float elapsedTime = 0f;  // 경과 시간
+
+        Color startColor = rbSprite.color;
+
+        while (elapsedTime < fadeDuration)
+        {
+            float alpha = Mathf.Lerp(startColor.a, 0f, elapsedTime / fadeDuration);  // 알파값을 점차 0으로 줄임
+            rbSprite.color = new Color(startColor.r, startColor.g, startColor.b, alpha);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        rbSprite.color = new Color(startColor.r, startColor.g, startColor.b, 0f);
+
+        Destroy(gameObject);
+    }
+
+    private IEnumerator BlinkDamageColor()
+    {
+        rbSprite.color = nomalDamageColor;
+        yield return new WaitForSeconds(blinkDuration);
+        rbSprite.color = Color.white;
+    }
+
 }

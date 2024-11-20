@@ -6,16 +6,16 @@ public class EnumyStateMachine : StateMachine
 {
     public Enumy Enumy { get;}
 
-    public EnumyIdle EnumyIdle { get;}
     public EnumyMove EnumyMove { get;}
-    public EnumyAttack EnumyAttack {  get;}
-    
+    public EnumyAttack EnumyAttack { get;}
+    public EnumyDie EnumyDie { get;}
+
     public EnumyStateMachine(Enumy enumy)
     {
         this.Enumy = enumy;
         
-        EnumyIdle = new EnumyIdle(this);
         EnumyMove = new EnumyMove(this);
         EnumyAttack = new EnumyAttack(this);
+        EnumyDie = new EnumyDie(this);
     }
 }

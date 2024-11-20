@@ -7,8 +7,9 @@ public class EnumyAttack : EnumyBaseSt
     public EnumyAttack(EnumyStateMachine stateMachine) : base(stateMachine) { }
 
     private float lastAttackTime;
-    public bool isAttacking = false;
+   
     float damage;
+    public bool isAttacking = false;
     public override void Enter()
     {
        damage = enumyData.Damage;
@@ -26,22 +27,28 @@ public class EnumyAttack : EnumyBaseSt
 
     public override void Update()
     {
+       
         OnAttack();
-        if (isAttacking)
-        {
-            SetTriggerAnimation(stateMachine.Enumy.animationData.AttackParameterHash);
-        }
+        
     }
 
     private void OnAttack()
     {
         if (Time.time - lastAttackTime > enumyData.AttackRate)
         {
+            isAttacking = true;
 
             lastAttackTime = Time.time;
-            RaycastHit2D hit = Physics2D.Raycast(stateMachine.Enumy.transform.position, stateMachine.Enumy.transform.right * -1, enumyData.AttackDirection);
-            isAttacking = true;
-            hit.collider.GetComponent<TakeDamage>().TakeDamage(damage);
+            if(isAttacking)
+            {
+               
+                SetTriggerAnimation(stateMachine.Enumy.animationData.AttackParameterHash);
+                RaycastHit2D hit = Physics2D.Raycast(stateMachine.Enumy.transform.position, stateMachine.Enumy.transform.right * -1, enumyData.AttackDirection, stateMachine.Enumy.targetMask);
+
+                Debug.Log(hit.collider.gameObject.name);
+                hit.collider.GetComponent<TakeDamage>().TakeDamage(damage);
+            }
+           
 
             
         }
