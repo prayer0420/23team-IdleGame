@@ -31,6 +31,7 @@ public class UIItemChoice : MonoBehaviour
         if (equippedItem == null)
         {
             ItemManager.itemManager.inventory.EquipItem(newItem);
+            ItemManager.itemManager.AddCharaterStat(newItem);
             equippedItem = null;
         }
         else
@@ -51,14 +52,13 @@ public class UIItemChoice : MonoBehaviour
 
     public void OnClickBtn(int choice)
     {
-        if(choice == 0)
+        if(choice == 1)
         {
-            ItemManager.itemManager.inventory.EquipItem(equippedItem);
-        }
-        else
-        {
+            ItemManager.itemManager.SubtractCharaterStat(equippedItem);
             ItemManager.itemManager.inventory.EquipItem(newItem);
+            ItemManager.itemManager.AddCharaterStat(newItem);
         }
+
         gameObject.SetActive(false);
         this.newItem = null;
         equippedItem = null;
