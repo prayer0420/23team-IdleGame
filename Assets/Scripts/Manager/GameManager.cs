@@ -89,6 +89,8 @@ public class GameManager : MonoBehaviour
         {
             player.SetSaveData(saveData.playerSaveData);
         }
+        player.PlayerOnDeath += HandlePlayerOnDeath;
+
 
         //아이템 설정
         ItemManager.itemManager.inventory.SetInventoryData(saveData.inventoryData);
@@ -230,6 +232,16 @@ public class GameManager : MonoBehaviour
     {
         return saveData.progress;
     }
+
+    //플레이어 죽으면
+    public void HandlePlayerOnDeath()
+    {
+        //플레이어 재생성
+        CreatePlayer();
+        //현재 스테이지 재시작
+        StartStage(CurrentChapter, CurrentStage, CurrentDifficulty,true);
+    }
+
 
     private void OnApplicationPause(bool pauseStatus)
     {

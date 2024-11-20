@@ -104,7 +104,8 @@ public class Player : MonoBehaviour, TakeDamage
 
         //플레이어 죽음 알림
         PlayerOnDeath?.Invoke();
-        //Destroy(gameObject);
+
+        Destroy(gameObject);
     }
     private IEnumerator BlinknomalDamageColor()
     {

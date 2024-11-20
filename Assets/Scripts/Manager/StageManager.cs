@@ -37,7 +37,6 @@ public class StageManager : MonoBehaviour
         StopAllCoroutines();
         //적 생성(챕터, 스테이지, 난이도에 따른)
         StartCoroutine(SpawnEnemies(chapter, stage, difficulty));
-        //TODO: Player달려오기
     }
 
     private IEnumerator SpawnEnemies(int chapter, int stage, DifficultyLevel difficulty)
