@@ -11,6 +11,8 @@ public class ItemManager : MonoBehaviour
     public UIItemInfo uiItemInfo;
     public UIItemChoice uiItemChoice;
 
+    private Dictionary<string, ItemData> itemDataDictionary;
+
     private void Awake()
     {
         if(itemManager == null)
@@ -31,5 +33,14 @@ public class ItemManager : MonoBehaviour
     {
         uiItemInfo.gameObject.SetActive(true);
         uiItemChoice.gameObject.SetActive(true);
+    }
+
+    public ItemData GetItemByID(string itemID)
+    {
+        if (itemDataDictionary.TryGetValue(itemID, out ItemData itemData))
+        {
+            return itemData;
+        }
+        return null;
     }
 }

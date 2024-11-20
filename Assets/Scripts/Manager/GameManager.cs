@@ -44,10 +44,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-    }
-
     public void InitializeGame()
     {
         saveData = SaveManager.Instance.LoadGame();
@@ -55,6 +51,25 @@ public class GameManager : MonoBehaviour
         if (saveData == null)
         {
             saveData = new SaveData();
+
+            CreatePlayer();
+
+            if (player != null)
+            {
+                saveData.playerSaveData = new PlayerSaveData(player.Data, player.Data.playerData.BaseMaxHealth);
+            }
+            else
+            {
+                // 플레이어를 생성할 수 없는 경우 기본값 설정
+                PlayerSO defaultPlayerSO = ResourceManager.Instance.LoadResource<PlayerSO>("Data/Player");
+                saveData.playerSaveData = new PlayerSaveData(defaultPlayerSO, defaultPlayerSO.playerData.BaseMaxHealth);
+            }
+            // 인벤토리 데이터 초기화
+            saveData.inventoryData = new InventoryData(5);
+        }
+        else
+        {
+            CreatePlayer(); 
         }
 
 
@@ -66,25 +81,50 @@ public class GameManager : MonoBehaviour
         mapManager = MapManager.Instance;
         stageManager = StageManager.Instance;
 
-        CreatePlayer();
-        InitializeManagers();
+
+        // 플레이어의 스탯을 저장된 데이터로 초기화
+        if (saveData.playerSaveData != null)
+        {
+            Debug.Log("데이터 이미 존재");
+            player.SetSaveData(saveData.playerSaveData);
+        }
+
+        //아이템 설정
+        ItemManager.itemManager.inventory.SetInventoryData(saveData.inventoryData);
+
+        stageManager.InitializeStageManager(player);
+
         StartStage(CurrentChapter, CurrentStage, CurrentDifficulty, false);
     }
 
     private void CreatePlayer()
     {
+        //GameObject playerPrefab = ResourceManager.Instance.LoadResource<GameObject>("Prefabs/Player");
+        //if (playerPrefab != null)
+        //{
+        //    GameObject playerObj = Instantiate(playerPrefab, new Vector2(-1.5f, -1f), Quaternion.identity);
+        //    player = playerObj.GetComponent<Player>();
+        //}
         GameObject playerPrefab = ResourceManager.Instance.LoadResource<GameObject>("Prefabs/Player");
         if (playerPrefab != null)
         {
             GameObject playerObj = Instantiate(playerPrefab, new Vector2(-1.5f, -1f), Quaternion.identity);
             player = playerObj.GetComponent<Player>();
+
+            if (player != null)
+            {
+                Debug.Log("플레이어 객체 생성 성공");
+            }
+            else
+            {
+                Debug.LogError("플레이어 컴포넌트를 찾을 수 없습니다.");
+            }
         }
-    }
+        else
+        {
+            Debug.LogError("Player 프리팹을 로드할 수 없습니다.");
+        }
 
-
-    private void InitializeManagers()
-    {
-        stageManager.InitializeStageManager(player);
     }
 
     public void StartStage(int chapterNumber, int stageNumber, DifficultyLevel difficulty, bool isFade)
@@ -194,10 +234,15 @@ public class GameManager : MonoBehaviour
 
     public void SaveGame()
     {
-        //TODO : Current뿐 아니라 전체 다 받아와야함
         saveData.currentChapter = CurrentChapter;
         saveData.currentStage = CurrentStage;
         saveData.difficulty = CurrentDifficulty;
+
+        // 플레이어 스탯 저장
+        saveData.playerSaveData = new PlayerSaveData(player.Data, player.healthSystem.player.currentValue);
+
+        // 인벤토리 데이터 저장
+        saveData.inventoryData = ItemManager.itemManager.inventory.GetInventoryData();
 
         SaveManager.Instance.SaveGame(saveData);
     }
@@ -206,12 +251,6 @@ public class GameManager : MonoBehaviour
     {
         return saveData.progress;
     }
-
-    //public void SetDifficulty(DifficultyLevel difficulty)
-    //{
-    //    CurrentDifficulty = difficulty;
-    //    SaveGame();
-    //}
 
     private void OnApplicationPause(bool pauseStatus)
     {
