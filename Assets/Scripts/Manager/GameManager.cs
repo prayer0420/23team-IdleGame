@@ -29,6 +29,8 @@ public class GameManager : MonoBehaviour
 
     public Player player;
 
+    public bool isPuase;
+
     private void Awake()
     {
         if (Instance == null)
