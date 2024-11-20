@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
     private const int INITNUMBER = 1;
 
     private SaveData saveData;
-    private TestPlayer player;
+    //private TestPlayer player;
     private UIManager uiManager;
     private MapManager mapManager;
     private StageManager stageManager;
@@ -26,6 +26,8 @@ public class GameManager : MonoBehaviour
     public Action<int,bool> OnStarUpdate;
 
     public bool isPause;
+
+    public Player player;
 
     private void Awake()
     {
@@ -62,7 +64,7 @@ public class GameManager : MonoBehaviour
         mapManager = MapManager.Instance;
         stageManager = StageManager.Instance;
 
-        CreatePlayer();
+        //CreatePlayer();
         InitializeManagers();
         StartStage(CurrentChapter, CurrentStage, CurrentDifficulty, false);
     }
@@ -72,8 +74,8 @@ public class GameManager : MonoBehaviour
         GameObject playerPrefab = ResourceManager.Instance.LoadResource<GameObject>("Prefabs/TestPlayer");
         if (playerPrefab != null)
         {
-            GameObject playerObj = Instantiate(playerPrefab);
-            player = playerObj.GetComponent<TestPlayer>();
+            //GameObject playerObj = Instantiate(playerPrefab);
+            //player = playerObj.GetComponent<TestPlayer>();
         }
     }
 

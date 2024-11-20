@@ -29,7 +29,7 @@ public class EnumyMove : EnumyBaseSt
 
     public override void FixedUpdate()
     {
-        PositionMove(stateMachine.Enumy.targetPlayer.position);
+        PositionMove(stateMachine.Enumy.targetPlayer.transform.position);
     }
 
     public override void Update()

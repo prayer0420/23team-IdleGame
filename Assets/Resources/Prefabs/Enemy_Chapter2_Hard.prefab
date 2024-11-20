@@ -13,7 +13,9 @@ GameObject:
   - component: {fileID: -6987238654532620373}
   - component: {fileID: 3814522218979918990}
   - component: {fileID: -1316460496236647417}
-  m_Layer: 0
+  - component: {fileID: -4277463824877250076}
+  - component: {fileID: -2763534204198958529}
+  m_Layer: 7
   m_Name: Enemy_Chapter2_Hard
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -94,7 +96,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5545912012519182530}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8529fe96a87c31e4987484ed6c17a465, type: 3}
   m_Name: 
@@ -171,3 +173,46 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &-4277463824877250076
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5545912012519182530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edeeebbca4cfca54c81cf67fc7bb2854, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animationData:
+    idleParameterName: Idle
+    movingParameterName: Moving
+    attackParameterName: Attack
+  <Data>k__BackingField: {fileID: 11400000, guid: 8211245b9be721348b3a6c7fa3f943f3, type: 2}
+  rb: {fileID: 0}
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 64
+  targetPlayer: {fileID: 0}
+--- !u!95 &-2763534204198958529
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5545912012519182530}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 340dfc4e2c9768c4c8f39f733f7dc955, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

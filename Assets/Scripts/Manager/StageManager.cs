@@ -5,8 +5,8 @@ public class StageManager : MonoBehaviour
 {
     public static StageManager Instance { get; private set; }
 
-    private TestPlayer player;
-    private TestEnemy[] enemies;
+    private Player player;
+    private Enumy[] enemies;
     private int enemyKillCount;
 
     private void Awake()
@@ -22,7 +22,7 @@ public class StageManager : MonoBehaviour
         }
     }
 
-    public void InitializeStageManager(TestPlayer player)
+    public void InitializeStageManager(Player player)
     {
         this.player = player;
     }
@@ -46,7 +46,7 @@ public class StageManager : MonoBehaviour
         int enemyCount = (stage == 3) ? 1 : 5;
         
         //적들을 enmies 리스트에 저장하여 관리
-        enemies = new TestEnemy[enemyCount];
+        enemies = new Enumy[enemyCount];
 
         string prefabPath = $"Prefabs/Enemy_Chapter{chapter}";
         if (difficulty == DifficultyLevel.Hard)
@@ -64,9 +64,9 @@ public class StageManager : MonoBehaviour
         for (int i = 0; i < enemyCount; i++)
         {
             GameObject enemyObj = Instantiate(enemyPrefab);
-            TestEnemy enemy = enemyObj.GetComponent<TestEnemy>();
-            enemy.InitializeEnemy(player);
-            enemy.OnDeath += () => HandleEnemyDeath(enemy); //죽을때 이벤트 발생 구독
+            Enumy enemy = enemyObj.GetComponent<Enumy>();
+            //enemy.InitializeEnemy(player);
+            //enemy.OnDeath += () => HandleEnemyDeath(enemy); //죽을때 이벤트 발생 구독
             enemyObj.transform.position = GetRandomSpawnPosition();
             enemies[i] = enemy;
             yield return new WaitForSeconds(2f);
@@ -74,7 +74,7 @@ public class StageManager : MonoBehaviour
     }
 
 
-    private void HandleEnemyDeath(TestEnemy enemy)
+    private void HandleEnemyDeath(Enumy enemy)
     {
         if (AreAllEnemiesDead())
         {
@@ -104,7 +104,7 @@ public class StageManager : MonoBehaviour
     {
         if (enemies != null)
         {
-            foreach (TestEnemy enemy in enemies)
+            foreach (Enumy enemy in enemies)
             {
                 if (enemy != null)
                 {
@@ -116,6 +116,7 @@ public class StageManager : MonoBehaviour
 
     private Vector2 GetRandomSpawnPosition()
     {
-        return new Vector2(3.49f, Random.Range(-2.59f, -0.72f));
+        //return new Vector2(5.64f, Random.Range(-1.4f, -0.9f));
+        return new Vector2(5.64f, -1.3f);
     }
 }

@@ -12,18 +12,20 @@ public class Enumy : MonoBehaviour, TakeDamage
     private EnumyStateMachine enumyStateMachine;
     public Rigidbody2D rb;
     public LayerMask targetMask;
-    public Transform targetPlayer;
-    
+    public Player targetPlayer;
+
 
     private void Awake()
     {
         animationData.Initialize();
         animator = GetComponent<Animator>();
-         enumyStateMachine = new EnumyStateMachine(this);
+        enumyStateMachine = new EnumyStateMachine(this);
+        rb = GetComponent<Rigidbody2D>();
     }
     private void Start()
     {
         enumyStateMachine.ChangeState(enumyStateMachine.EnumyMove);
+       targetPlayer = GameManager.Instance.player;
     }
     private void Update()
     {
