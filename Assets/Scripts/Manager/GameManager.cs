@@ -66,18 +66,18 @@ public class GameManager : MonoBehaviour
         mapManager = MapManager.Instance;
         stageManager = StageManager.Instance;
 
-        //CreatePlayer();
+        CreatePlayer();
         InitializeManagers();
         StartStage(CurrentChapter, CurrentStage, CurrentDifficulty, false);
     }
 
     private void CreatePlayer()
     {
-        GameObject playerPrefab = ResourceManager.Instance.LoadResource<GameObject>("Prefabs/TestPlayer");
+        GameObject playerPrefab = ResourceManager.Instance.LoadResource<GameObject>("Prefabs/Player");
         if (playerPrefab != null)
         {
-            //GameObject playerObj = Instantiate(playerPrefab);
-            //player = playerObj.GetComponent<TestPlayer>();
+            GameObject playerObj = Instantiate(playerPrefab, new Vector2(-1.5f, -1f), Quaternion.identity);
+            player = playerObj.GetComponent<Player>();
         }
     }
 

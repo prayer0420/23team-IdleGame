@@ -43,7 +43,6 @@ public class PlayerMoveState : PlayerBaseState
             // 이동
             Debug.Log("이동?");
             stateMachine.Player.rb.MovePosition(playerPosition + move);
-
         }
         else return;
     }

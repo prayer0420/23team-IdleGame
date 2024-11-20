@@ -7,7 +7,8 @@ public class PlayerAttackState : PlayerBaseState
     public PlayerAttackState(PlayerStateMachine stateMachine) : base(stateMachine) { }
     private float lastAttackTime;
     public bool isAttacking =false;
-    
+
+    private Queue<Enumy> enemyQueue = new Queue<Enumy>();
 
     public override void Enter()
     {
@@ -22,6 +23,7 @@ public class PlayerAttackState : PlayerBaseState
     public override void Update()
     {
         OnAttack();
+        Debug.Log(enemyQueue.Count);
       
     }
     public override void FixedUpdate()
@@ -41,7 +43,16 @@ public class PlayerAttackState : PlayerBaseState
             SetTriggerAnimation(stateMachine.Player.animationData.AttackParameterHash);
                 RaycastHit2D hit = Physics2D.Raycast(stateMachine.Player.transform.position, stateMachine.Player.transform.right, playerData.BaseAttackaDirection,stateMachine.Player.targetMask);
 
-                hit.collider.GetComponent<TakeDamage>().TakeDamage(damage);
+                //hit.collider.GetComponent<TakeDamage>().TakeDamage(damage);
+                if (hit.collider != null)
+                {
+                    Enumy enumy = hit.collider.GetComponent<Enumy>();
+                    if (enumy != null)
+                    {
+                        AddEnemy(enumy);
+                        Attack();
+                    }
+                }
             }
            
 
@@ -51,4 +62,42 @@ public class PlayerAttackState : PlayerBaseState
         
     }
 
+    public void AddEnemy(Enumy enumy)
+    {
+        if (!enemyQueue.Contains(enumy))
+        {
+            enumy.OnDeath += RemoveEnemy;
+            enemyQueue.Enqueue(enumy);
+        }
+    }
+
+    public void RemoveEnemy(Enumy enumy)
+    {
+        var tempList = new List<Enumy>(enemyQueue);
+        tempList.Remove(enumy);
+
+        enemyQueue.Clear();
+        foreach (var enemy in tempList)
+        {
+            
+            enemyQueue.Enqueue(enemy);
+        }
+    }
+
+    public void Attack()
+    {
+        if (enemyQueue.Count > 0)
+        {
+            var enemy = enemyQueue.Peek(); 
+            if (enemy != null && !enemy.isDie)
+            {
+                enemy.TakeDamage(damage);
+            }
+            else
+            {
+                enemyQueue.Dequeue();
+                enemy.OnDeath -= RemoveEnemy;
+            }
+        }
+    }
 }

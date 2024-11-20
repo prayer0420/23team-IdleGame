@@ -1,5 +1,5 @@
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Enumy : MonoBehaviour, TakeDamage
@@ -15,15 +15,13 @@ public class Enumy : MonoBehaviour, TakeDamage
     public Rigidbody2D rb;
     private SpriteRenderer rbSprite;
     public LayerMask targetMask;
-    public Transform targetPlayer;
+    public Player targetPlayer;
     public bool isDie = false;
     private float fadeDuration = 2.0f;
     public Color nomalDamageColor = Color.red;  // 데미지 시 색상
     public float blinkDuration = 0.1f;  // 깜박이는 시간
 
-
-
-
+    public Action<Enumy> OnDeath { get; set; }
 
     private void Awake()
     {
@@ -31,19 +29,19 @@ public class Enumy : MonoBehaviour, TakeDamage
         animator = GetComponentInChildren<Animator>();
         enumyStateMachine = new EnumyStateMachine(this);
         rbSprite = GetComponentInChildren<SpriteRenderer>();
+        rb = GetComponent<Rigidbody2D>();
     }
     private void Start()
     {
         enumyStateMachine.ChangeState(enumyStateMachine.EnumyMove);
         healthSystem = GetComponent<HealthSystem>();
+        targetPlayer = GameManager.Instance.player;
     }
     private void Update()
     {
         if (healthSystem.enumy.currentValue <= 0f) enumyStateMachine.ChangeState(enumyStateMachine.EnumyDie);
         AttackDirectionCheck();
         enumyStateMachine.Update();
-
-
     }
     private void FixedUpdate()
     {
@@ -78,10 +76,7 @@ public class Enumy : MonoBehaviour, TakeDamage
     {
         gameObject.layer = LayerMask.NameToLayer("Default");
         StartCoroutine(nameof(FadeOutAndDie));
-
-
     }
-
     private IEnumerator FadeOutAndDie()
     {
         float elapsedTime = 0f;  // 경과 시간
@@ -98,7 +93,7 @@ public class Enumy : MonoBehaviour, TakeDamage
         }
 
         rbSprite.color = new Color(startColor.r, startColor.g, startColor.b, 0f);
-
+        OnDeath?.Invoke(this);
         Destroy(gameObject);
     }
 

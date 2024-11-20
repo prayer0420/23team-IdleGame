@@ -56,7 +56,7 @@ public class ChapterSelectUI : MonoBehaviour
         int maxStages = 3;
         chapterButtons = new ChapterButtonUI[maxStages];
 
-        string prefabPath = $"Prefabs/ChapterButton";
+        string prefabPath = $"Prefabs/Stage/ChapterButton";
 
         for (int i = 0; i < maxStages; i++)
         {

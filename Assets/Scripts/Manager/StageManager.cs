@@ -48,7 +48,7 @@ public class StageManager : MonoBehaviour
         //적들을 enmies 리스트에 저장하여 관리
         enemies = new Enumy[enemyCount];
 
-        string prefabPath = $"Prefabs/Enemy_Chapter{chapter}";
+        string prefabPath = $"Prefabs/Enemy/Enemy_Chapter{chapter}";
         if (difficulty == DifficultyLevel.Hard)
         {
             //하드모드의 몬스터는 이름 뒤에 _Hard붙이기
@@ -66,7 +66,7 @@ public class StageManager : MonoBehaviour
             GameObject enemyObj = Instantiate(enemyPrefab);
             Enumy enemy = enemyObj.GetComponent<Enumy>();
             //enemy.InitializeEnemy(player);
-            //enemy.OnDeath += () => HandleEnemyDeath(enemy); //죽을때 이벤트 발생 구독
+            enemy.OnDeath += (enemy) => HandleEnemyDeath(enemy); //죽을때 이벤트 발생 구독
             enemyObj.transform.position = GetRandomSpawnPosition();
             enemies[i] = enemy;
             yield return new WaitForSeconds(2f);
@@ -79,7 +79,7 @@ public class StageManager : MonoBehaviour
         if (AreAllEnemiesDead())
         {
             Debug.Log("OnStageClear");
-            Invoke("OnStageClear",2f);
+            Invoke("OnStageClear",1.5f);
         }
     }
 
@@ -116,7 +116,7 @@ public class StageManager : MonoBehaviour
 
     private Vector2 GetRandomSpawnPosition()
     {
-        //return new Vector2(5.64f, Random.Range(-1.4f, -0.9f));
-        return new Vector2(5.64f, -1.3f);
+        return new Vector2(5.64f, Random.Range(-1.22f, -0.876f));
+        //return new Vector2(5.64f, -1.3f);
     }
 }

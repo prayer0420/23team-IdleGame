@@ -103,7 +103,4 @@ public class Player : MonoBehaviour, TakeDamage
         yield return new WaitForSeconds(blinkDuration);
         spriteRenderer.color = Color.white;
     }
-
-    
-
 }
