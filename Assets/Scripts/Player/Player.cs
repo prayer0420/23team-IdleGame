@@ -141,7 +141,7 @@ public class Player : MonoBehaviour, TakeDamage
     {
         isPoisoned = true;
         endTime = enumy.enumyData.PoisonDuration + Time.time;
-        while (isPoisoned && Time.time < endTime)
+        while (Time.time < endTime)
         {
             healthSystem.player.HealthDecrease(damage);
             StartCoroutine(nameof(BlinkPoisonDamageColor));
@@ -149,7 +149,7 @@ public class Player : MonoBehaviour, TakeDamage
             yield return new WaitForSeconds(enumy.enumyData.PoisonInterval);
         }
         isPoisoned = false;
-        endTime = 0;
+       
     }
 
     private IEnumerator StunCoroutine()
