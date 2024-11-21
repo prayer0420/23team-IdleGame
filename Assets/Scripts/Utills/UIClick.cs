@@ -3,11 +3,10 @@ using UnityEngine.EventSystems;
 
 public class UIClick : MonoBehaviour, IPointerClickHandler
 {
+    private string uiClickSFXPath = "Audio/SFX/Click";
     public void OnPointerClick(PointerEventData eventData)
     {
-        //SFX
-        AudioManager.Instance.PlaySFX(AudioManager.Instance.UiClickClip);
-        //TODO: VFX
+        AudioManager.Instance.PlaySFX(uiClickSFXPath);
     }
-    
+
 }

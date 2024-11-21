@@ -9,8 +9,8 @@ public class ItemShop : MonoBehaviour
 
     private void Awake()
     {
-        //itemDatas = ResourceManager.Instance.LoadAllResources<ItemData>("ScriptableObject");
-        itemDatas = Resources.LoadAll<ItemData>("ScriptableObject");
+        itemDatas = ResourceManager.Instance.LoadAllResources<ItemData>("ScriptableObject");
+        //itemDatas = Resources.LoadAll<ItemData>("ScriptableObject");
         for (int i = 0; i < itemDatas.Length; i++)
         {
             Debug.Log(itemDatas[i].name);

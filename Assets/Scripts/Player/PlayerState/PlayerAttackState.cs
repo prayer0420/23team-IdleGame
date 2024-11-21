@@ -9,21 +9,21 @@ public class PlayerAttackState : PlayerBaseState
     public bool isAttacking =false;
 
     private Queue<Enumy> enemyQueue = new Queue<Enumy>();
+    private string attackSFXPath = "Audio/SFX/PlayerAttack";
 
     public override void Enter()
     {
+        Reset();
     }
 
     public override void Exit()
     {
-
+        Reset();
     }
 
     public override void Update()
     {
         OnAttack();
-        
-      
     }
     public override void FixedUpdate()
     {
@@ -102,6 +102,7 @@ public class PlayerAttackState : PlayerBaseState
             if (enemy != null && !enemy.isDie)
             {
                 enemy.TakeDamage(damage);
+                AudioManager.Instance.PlaySFX(attackSFXPath);
             }
             else
             {

@@ -38,6 +38,7 @@ public class StageManager : MonoBehaviour
         ClearEnemies();
         StopAllCoroutines();
         StartCoroutine(SpawnEnemiesCoroutine(chapter, stage, difficulty));
+        UIManager.Instance.MonsterKillCountUI.UpdateUI(enemyKillCount, enemies.Length);
     }
 
     private IEnumerator SpawnEnemiesCoroutine(int chapter, int stage, DifficultyLevel difficulty)
@@ -138,14 +139,12 @@ public class StageManager : MonoBehaviour
 
     private void HandleEnemyDeath(Enumy enemy)
     {
-        Debug.Log("Àû Á×À½");
         enemy.OnDeath -= HandleEnemyDeath;
         
         string prefabPath = enemy.PrefabPath;
         if (enemyPools.TryGetValue(prefabPath, out ObjectPool<Enumy> enemyPool))
         {
             enemyPool.ReturnToPool(enemy);
-            Debug.Log("Àû¤² ¤¿¤¤È¯1");
         }
 
         if (AreAllEnemiesDead())
@@ -163,6 +162,7 @@ public class StageManager : MonoBehaviour
     private bool AreAllEnemiesDead()
     {
         enemyKillCount++;
+        UIManager.Instance.MonsterKillCountUI.UpdateUI(enemyKillCount, enemies.Length);
         if (enemyKillCount >= enemies.Length)
         {
             enemyKillCount = 0;
@@ -184,7 +184,6 @@ public class StageManager : MonoBehaviour
                     if (enemyPools.TryGetValue(prefabPath, out ObjectPool<Enumy> enemyPool))
                     {
                         enemyPool.ReturnToPool(enemy);
-                        
                     }
                     else
                     {

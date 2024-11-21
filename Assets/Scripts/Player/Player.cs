@@ -35,6 +35,8 @@ public class Player : MonoBehaviour, TakeDamage
 
     public Action PlayerOnDeath;
 
+    private string hitSFXPath = "Audio/SFX/PlayerHit";
+
     private void Awake()
     {
         healthSystem = GetComponent<HealthSystem>();
@@ -108,8 +110,6 @@ public class Player : MonoBehaviour, TakeDamage
         healthSystem.player.HealthDecrease(damage);
         StartCoroutine(nameof(BlinknomalDamageColor));
         StartCoroutine(nameof(StunCoroutine));
-
-        
     }
 
 
@@ -118,6 +118,7 @@ public class Player : MonoBehaviour, TakeDamage
         healthSystem.player.HealthDecrease(damage);
         StartCoroutine(nameof(BlinknomalDamageColor));
 
+        AudioManager.Instance.PlaySFX(hitSFXPath);
     }
     public void OnDie()
     {

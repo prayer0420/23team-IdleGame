@@ -41,7 +41,6 @@ public class ObjectPool<T> where T : UnityEngine.Object
 
     public void ReturnToPool(T obj)
     {
-        Debug.Log($"{obj.name} 반환");
         DeactivateInstance(obj);
         pool.Enqueue(obj);
     }

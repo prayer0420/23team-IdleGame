@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.UI; 
+using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour
 {
@@ -18,12 +18,12 @@ public class PauseMenu : MonoBehaviour
     [Header("Other Buttons")]
     public Button ExitButton;
 
-
-    void Start()
+    private void Start()
     {
-        Button_BGM1.onClick.AddListener(() => OnBGMButtonClicked(0));
-        Button_BGM2.onClick.AddListener(() => OnBGMButtonClicked(1));
-        Button_BGM3.onClick.AddListener(() => OnBGMButtonClicked(2));
+        // BGM 버튼에 리스너 추가
+        Button_BGM1.onClick.AddListener(() => OnBGMButtonClicked("Audio/BGM/BGM1"));
+        Button_BGM2.onClick.AddListener(() => OnBGMButtonClicked("Audio/BGM/BGM2"));
+        Button_BGM3.onClick.AddListener(() => OnBGMButtonClicked("Audio/BGM/BGM3"));
 
         InitializeVolumeSliders();
 
@@ -34,7 +34,7 @@ public class PauseMenu : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             HandleOnPause();
         }
@@ -60,7 +60,7 @@ public class PauseMenu : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        //TODO: 적 못움직이게
+        // TODO: 적 움직임 멈추기
     }
 
     private void CloseMenu()
@@ -70,7 +70,8 @@ public class PauseMenu : MonoBehaviour
         Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        //TODO: 적 다시 움직이게
+
+        // TODO: 적 움직임 재개
     }
 
     public void ClickExit()
@@ -78,9 +79,9 @@ public class PauseMenu : MonoBehaviour
         Application.Quit();
     }
 
-    public void OnBGMButtonClicked(int index)
+    public void OnBGMButtonClicked(string bgmPath)
     {
-        AudioManager.Instance.PlayBGM(index);
+        AudioManager.Instance.PlayBGM(bgmPath);
     }
 
     private void InitializeVolumeSliders()
@@ -88,17 +89,19 @@ public class PauseMenu : MonoBehaviour
         // BGM 볼륨 슬라이더 초기화
         Slider_BGMVolume.minValue = 0f;
         Slider_BGMVolume.maxValue = 1f;
-        Slider_BGMVolume.value = AudioManager.Instance.GetBGMVolume();
+        Slider_BGMVolume.value = AudioManager.Instance.bgmVolume;
         Slider_BGMVolume.onValueChanged.AddListener(OnBGMVolumeChanged);
 
+        // SFX 볼륨 슬라이더 초기화
         Slider_SFXVolume.minValue = 0f;
         Slider_SFXVolume.maxValue = 1f;
-        Slider_SFXVolume.value = AudioManager.Instance.GetSFXVolume();
+        Slider_SFXVolume.value = AudioManager.Instance.sfxVolume;
         Slider_SFXVolume.onValueChanged.AddListener(OnSFXVolumeChanged);
 
+        // 마스터 볼륨 슬라이더 초기화
         Slider_MasterVolume.minValue = 0f;
         Slider_MasterVolume.maxValue = 1f;
-        Slider_MasterVolume.value = AudioManager.Instance.GetMasterVolume();
+        Slider_MasterVolume.value = AudioManager.Instance.masterVolume;
         Slider_MasterVolume.onValueChanged.AddListener(OnMasterVolumeChanged);
     }
 
