@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
 
 public interface TakeDamage
 {
@@ -38,6 +36,7 @@ public class Player : MonoBehaviour, TakeDamage
     private string hitSFXPath = "Audio/SFX/PlayerHit";
 
     private float timer = 0;
+    float endTime = 0;
 
     private void Awake()
     {
@@ -141,23 +140,16 @@ public class Player : MonoBehaviour, TakeDamage
     private IEnumerator PoisonDamage(float damage)
     {
         isPoisoned = true;
-        while (isPoisoned)
+        endTime = enumy.enumyData.PoisonDuration + Time.time;
+        while (isPoisoned && Time.time < endTime)
         {
             healthSystem.player.HealthDecrease(damage);
             StartCoroutine(nameof(BlinkPoisonDamageColor));
+
             yield return new WaitForSeconds(enumy.enumyData.PoisonInterval);
         }
-        if (timer < enumy.enumyData.PoisonDuration)
-        {
-            timer += Time.deltaTime;
-        }
-        else if (timer >= enumy.enumyData.PoisonDuration)
-        {
-            isPoisoned = false;
-            timer = 0;
-        }
-
-
+        isPoisoned = false;
+        endTime = 0;
     }
 
     private IEnumerator StunCoroutine()

@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 
-public class ObjectPool<T> where T : UnityEngine.Object
+public class ObjectPool<T> where T : Object
 {
     private T prefab;
     private Queue<T> pool;
@@ -13,7 +12,7 @@ public class ObjectPool<T> where T : UnityEngine.Object
         this.prefab = prefab;
         this.parentTransform = parent;
         pool = new Queue<T>();
-
+        //초기에 생성
         for (int i = 0; i < initialSize; i++)
         {
             T obj = Object.Instantiate(prefab, parentTransform);
@@ -21,12 +20,12 @@ public class ObjectPool<T> where T : UnityEngine.Object
             pool.Enqueue(obj);
         }
     }
-
+    //풀에서 가져오기
     public T Get()
     {
         T obj;
 
-        if (pool.Count > 0)
+        if (pool.Count > 0) 
         {
             obj = pool.Dequeue();
         }
@@ -34,11 +33,10 @@ public class ObjectPool<T> where T : UnityEngine.Object
         {
             obj = Object.Instantiate(prefab, parentTransform);
         }
-        //Debug.Log($"{obj.name} 가져오기");
         ActivateInstance(obj);
         return obj;
     }
-
+    //풀로 반환
     public void ReturnToPool(T obj)
     {
         DeactivateInstance(obj);

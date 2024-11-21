@@ -59,6 +59,4 @@ public class SaveManager : MonoBehaviour
             Debug.LogError($"게임 저장 실패: {e.Message}");
         }
     }
-
-
 }

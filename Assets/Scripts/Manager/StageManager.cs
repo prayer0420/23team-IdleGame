@@ -122,7 +122,7 @@ public class StageManager : MonoBehaviour
         return prefabPath;
     }
 
-    // ObjectPool을 통해 적 생성
+    // 리소스매니저로부터 Enemy리소스를 받아옴
     private ObjectPool<Enumy> GetOrCreateEnemyPool(string prefabPath, int initialSize)
     {
         if (!enemyPools.TryGetValue(prefabPath, out ObjectPool<Enumy> enemyPool))

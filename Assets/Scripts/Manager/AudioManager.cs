@@ -36,7 +36,6 @@ public class AudioManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
     private void InitializeSFXPool()
     {
         if (sfxPrefab == null)
@@ -89,27 +88,7 @@ public class AudioManager : MonoBehaviour
             bgmSource.Stop();
         }
     }
-
-    public void PlaySFX(string sfxPath)
-    {
-        AudioClip sfxClip = GetAudioClip(sfxPath);
-
-        AudioSource sfxSource = sfxPool.Get();
-        sfxSource.clip = sfxClip;
-        sfxSource.volume = sfxVolume * masterVolume;
-        sfxSource.Play();
-
-        // SFX 재생이 끝난 후 풀에 반환
-        StartCoroutine(ReturnSFXSourceToPool(sfxSource, sfxClip.length));
-    }
-
-    private IEnumerator ReturnSFXSourceToPool(AudioSource source, float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        source.clip = null;
-        sfxPool.ReturnToPool(source);
-    }
-
+    //리소스 매니저를 통해 오디오 클립 가져오기
     private AudioClip GetAudioClip(string path)
     {
         if (audioClipCache.TryGetValue(path, out AudioClip cachedClip))
@@ -126,6 +105,27 @@ public class AudioManager : MonoBehaviour
             return clip;
         }
     }
+    //풀에서 오디오 클립을 가져오고, 재생이 끝나면 풀에 반환
+    public void PlaySFX(string sfxPath)
+    {
+        AudioClip sfxClip = GetAudioClip(sfxPath);
+
+        AudioSource sfxSource = sfxPool.Get();
+        sfxSource.clip = sfxClip;
+        sfxSource.volume = sfxVolume * masterVolume;
+        sfxSource.Play();
+
+        StartCoroutine(ReturnSFXSourceToPool(sfxSource, sfxClip.length));
+    }
+
+    private IEnumerator ReturnSFXSourceToPool(AudioSource source, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        source.clip = null;
+        sfxPool.ReturnToPool(source);
+    }
+
+
 
     // 볼륨 설정 메서드
     public void SetBGMVolume(float volume)

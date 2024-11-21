@@ -1,9 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System;
-using System.Data;
-using System.Net.NetworkInformation;
 
 public class UIManager : MonoBehaviour
 {
@@ -19,8 +16,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Button nextStage;
     [SerializeField] private Button prevStage;
     public MonsterKillCountUI MonsterKillCountUI;
-
-    //public Action<int, bool> OnStarUdpate;
 
     private void Awake()
     {

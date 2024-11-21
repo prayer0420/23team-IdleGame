@@ -53,7 +53,7 @@ public class ResourceManager : MonoBehaviour
         }
         else
         {
-            T[] resources = Resources.LoadAll<T>(""); // 빈 문자열로 모든 리소스 로드...
+            T[] resources = Resources.LoadAll<T>(""); 
             if (resources != null && resources.Length > 0)
             {
                 Object[] objects = new Object[resources.Length];
@@ -62,34 +62,6 @@ public class ResourceManager : MonoBehaviour
                     objects[i] = resources[i];
                 }
                 resourceArrayCache[cacheKey] = objects;
-            }
-            return resources;
-        }
-    }
-
-    public T[] LoadAllResources<T>(string path) where T : Object
-    {
-        if (resourceArrayCache.TryGetValue(path, out Object[] cachedResources))
-        {
-            // Object[] 에서 T[]로 변환
-            T[] resources = new T[cachedResources.Length];
-            for (int i = 0; i < cachedResources.Length; i++)
-            {
-                resources[i] = cachedResources[i] as T;
-            }
-            return resources;
-        }
-        else
-        {
-            T[] resources = Resources.LoadAll<T>(path);
-            if (resources != null && resources.Length > 0)
-            {
-                Object[] objects = new Object[resources.Length];
-                for (int i = 0; i < resources.Length; i++)
-                {
-                    objects[i] = resources[i];
-                }
-                resourceArrayCache[path] = objects;
             }
             return resources;
         }

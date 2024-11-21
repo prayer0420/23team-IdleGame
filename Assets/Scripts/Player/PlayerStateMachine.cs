@@ -16,8 +16,5 @@ public class PlayerStateMachine : StateMachine
         AttackState = new PlayerAttackState(this);
         DieState = new PlayerDieState(this);
 
-
-
-
     }
 }

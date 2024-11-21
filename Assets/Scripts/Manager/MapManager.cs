@@ -3,7 +3,6 @@ using System.Collections;
 using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
-using UnityEngine.Pool;
 
 public class MapManager : MonoBehaviour
 {

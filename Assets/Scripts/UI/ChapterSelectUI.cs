@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System;
 
 public class ChapterSelectUI : MonoBehaviour
 {
@@ -23,17 +22,14 @@ public class ChapterSelectUI : MonoBehaviour
         difficultyToggleButton.interactable = false;
     }
 
-    //Open ChapterPnael
     public void ToggleChapterPanelSelect()
     {
         ChapterSelectPanel.SetActive(!ChapterSelectPanel.activeSelf);
         if (ChapterSelectPanel.activeSelf)
         {
-            //Debug.Log("챕터 패널 창 열었을 때");
             UpdateDifficultyText();
             if (GameManager.Instance.CurrentDifficulty == DifficultyLevel.Hard)
             {
-                //difficultyToggleButton 활성화
                 ActivedifficultyToggleButton();
             }
             UpdateChapterUI();

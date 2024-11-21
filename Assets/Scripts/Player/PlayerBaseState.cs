@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class PlayerBaseState : IState
@@ -10,11 +8,12 @@ public abstract class PlayerBaseState : IState
     protected float damage;
     protected Vector3 startPosition = new Vector3(-1.5f, 0f, 0f);       // 시작위치
   
+
+    public abstract void Enter();   // 상태가 시작 되었을 때 시작하는 매서드
+    public abstract void Exit();    // 상태가 변경 되면 호출 되는 매서드
+    public abstract void Update();  // 매 프레임 마다 호출 되는 매서드
+    public abstract void FixedUpdate();
     
-
-
-
-
     protected PlayerBaseState(PlayerStateMachine stateMachine)
     {
         this.stateMachine = stateMachine;
@@ -22,13 +21,6 @@ public abstract class PlayerBaseState : IState
         moveSpeed = playerData.BaseSpeed;
         damage = playerData.BaseDamage;
     }
-
-
-    public abstract void Enter();   // 상태가 시작 되었을 때 시작하는 매서드
-    public abstract void Exit();    // 상태가 변경 되면 호출 되는 매서드
-    public abstract void Update();  // 매 프레임 마다 호출 되는 매서드
-    public abstract void FixedUpdate();
-    
    
 
     public void StartAnimation(int animationHash)
@@ -50,7 +42,5 @@ public abstract class PlayerBaseState : IState
     {
         stateMachine.Player.animator.ResetTrigger(animationHash);
     }
-
-
 
 }

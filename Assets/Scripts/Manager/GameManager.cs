@@ -1,7 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.LowLevel;
-
 public enum DifficultyLevel
 {
     Normal,
@@ -127,12 +125,12 @@ public class GameManager : MonoBehaviour
         //플레이어 위치 초기화
         player.transform.position = PlayerInitPosition;
 
-        //수정
+        //수정 필요
         stageManager.StartStage(CurrentChapter, CurrentStage, CurrentDifficulty);
         //맵 전환
         mapManager.ChangeMap(CurrentChapter, () =>
         {
-            //적 초기화
+            //적 초기화 수정필요
             //stageManager.StartStage(CurrentChapter, CurrentStage, CurrentDifficulty);
         }, isFade);
 
