@@ -53,7 +53,6 @@ public class MapManager : MonoBehaviour
         }
     }
 
-
     private IEnumerator FadeOutAndIn(int newChapterNumber, Action callback, bool isFade)
     {
 
@@ -72,7 +71,7 @@ public class MapManager : MonoBehaviour
 
     private IEnumerator Fade(float startAlpha, float endAlpha)
     {
-        float duration = 2f;
+        float duration = 1.5f;
         float elapsed = 0f;
         Color color = fade.color;
         while (elapsed < duration)
