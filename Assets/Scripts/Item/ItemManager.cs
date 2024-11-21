@@ -55,4 +55,54 @@ public class ItemManager : MonoBehaviour
         }
         return null;
     }
+
+    public void AddCharaterStat(ItemData item)
+    {
+        switch(item.itemType)
+        {
+            case ItemType.Weapon:
+                GameManager.Instance.player.Data.playerData.BaseDamage += item.itemStat;
+                break;
+            case ItemType.Boots:
+                GameManager.Instance.player.Data.playerData.BaseMaxHealth += item.itemStat;
+                break;
+            case ItemType.Helmet:
+                GameManager.Instance.player.Data.playerData.BaseMaxHealth += item.itemStat;
+                break;
+            case ItemType.Gloves:
+                GameManager.Instance.player.Data.playerData.BaseMaxHealth += item.itemStat;
+                break;
+            case ItemType.Armor:
+                GameManager.Instance.player.Data.playerData.BaseMaxHealth += item.itemStat;
+                break;
+            default:
+                Debug.Log("버그 발생");
+                break;
+        }
+    }
+
+    public void SubtractCharaterStat(ItemData item)
+    {
+        switch (item.itemType)
+        {
+            case ItemType.Weapon:
+                GameManager.Instance.player.Data.playerData.BaseDamage -= item.itemStat;
+                break;
+            case ItemType.Boots:
+                GameManager.Instance.player.Data.playerData.BaseMaxHealth -= item.itemStat;
+                break;
+            case ItemType.Helmet:
+                GameManager.Instance.player.Data.playerData.BaseMaxHealth -= item.itemStat;
+                break;
+            case ItemType.Gloves:
+                GameManager.Instance.player.Data.playerData.BaseMaxHealth -= item.itemStat;
+                break;
+            case ItemType.Armor:
+                GameManager.Instance.player.Data.playerData.BaseMaxHealth -= item.itemStat;
+                break;
+            default:
+                Debug.Log("버그 발생");
+                break;
+        }
+    }
 }

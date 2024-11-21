@@ -17,7 +17,6 @@ public class UIItemInfo : MonoBehaviour
     {
         SetInfo();
         gameObject.SetActive(false);
-        Debug.Log("이거 실행됐냐?" + gameObject.name);
     }
 
     private void SetInfo()
@@ -32,7 +31,6 @@ public class UIItemInfo : MonoBehaviour
 
     public void ShowItem(ItemData item)
     {
-            Debug.Log("확인들어간다." + itemImage);
         if (item == null)
         {
             Debug.Log("아이템 데이터가 없습니다.");
@@ -43,7 +41,6 @@ public class UIItemInfo : MonoBehaviour
 
         if (itemImage == null)
         {
-            Debug.Log("확인들어간다2222." + itemImage);
             SetInfo();
             gameObject.SetActive(true);
         }

@@ -5,7 +5,8 @@ using UnityEngine;
 public enum MonsterType
 {
     normal,
-    poison
+    poison,
+    Stun
 }
 public class Enumy : MonoBehaviour, TakeDamage
 {
@@ -21,6 +22,7 @@ public class Enumy : MonoBehaviour, TakeDamage
     public Rigidbody2D rb;
     private SpriteRenderer rbSprite;
     public LayerMask targetMask;
+    public MonsterType currentType;
     public Player targetPlayer;
     public bool isDie = false;
     private float fadeDuration = 2.0f;
@@ -90,21 +92,30 @@ public class Enumy : MonoBehaviour, TakeDamage
     public void AttackDirectionCheck()
     {
         RaycastHit2D hit = Physics2D.Raycast(enumyStateMachine.Enumy.transform.position, enumyStateMachine.Enumy.transform.right * -1, Data.enumyData.AttackDirection, targetMask);
-        if (hit.collider == null)
+        if (hit.collider == null && targetPlayer.isStunned)
         {
             enumyStateMachine.ChangeState(enumyStateMachine.EnumyMove);
         }
-        else if (hit.collider != null && !isDie)
+        else if (hit.collider != null)
         {
-            if(monsterType == MonsterType.normal) enumyStateMachine.ChangeState(enumyStateMachine.EnumyAttack);
-            else enumyStateMachine.ChangeState(enumyStateMachine.EnumyPoisonAttack);
+            //if(monsterType == currentType)
+            //{
+
+            //}
+
+            if (monsterType == MonsterType.normal) enumyStateMachine.ChangeState(enumyStateMachine.EnumyAttack);
+            else if (monsterType == MonsterType.poison) enumyStateMachine.ChangeState(enumyStateMachine.EnumyPoisonAttack);
+            else if (monsterType == MonsterType.Stun) enumyStateMachine.ChangeState(enumyStateMachine.EnumyStunAttack);
 
         }
     }
 
+    
     public void ApplyPoisonDamage(float damage)
     {
-
+    }
+    public void StunDamage(Vector2 damagedPosition, float damage)
+    {
     }
     public void TakeDamage(float damage)
     {
@@ -147,5 +158,4 @@ public class Enumy : MonoBehaviour, TakeDamage
         rbSprite.color = Color.white;
     }
 
-   
 }

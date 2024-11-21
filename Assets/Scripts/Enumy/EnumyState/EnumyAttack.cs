@@ -7,7 +7,10 @@ using static UnityEngine.EventSystems.EventTrigger;
 
 public class EnumyAttack : EnumyBaseState
 {
-    public EnumyAttack(EnumyStateMachine stateMachine) : base(stateMachine) { }
+    public EnumyAttack(EnumyStateMachine stateMachine) : base(stateMachine) 
+    {
+        stateMachine.Enumy.currentType = MonsterType.normal;
+    }
 
     private float lastAttackTime;
    

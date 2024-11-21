@@ -8,6 +8,7 @@ public interface TakeDamage
 {
     public void TakeDamage(float damage);
     public void ApplyPoisonDamage(float damage);
+    public void StunDamage(Vector2 damagedPosition, float damage);
 }
 public class Player : MonoBehaviour, TakeDamage
 {
@@ -18,13 +19,14 @@ public class Player : MonoBehaviour, TakeDamage
 
     public Animator animator {  get; private set; }
     public HealthSystem healthSystem { get; private set; }
-    public PlayerStateMachine stateMachine;
+    private PlayerStateMachine stateMachine;
     public Rigidbody2D rb;
     public LayerMask targetMask;
     private SpriteRenderer spriteRenderer;
     private Coroutine poisonCoroutine;
     public bool isDie = false;
     private bool isPoisoned = false;  // 독 상태 여부
+    public bool isStunned = false;  // 스턴 상태 여부
     public Color nomalDamageColor = Color.red;  // 데미지 시 색상
     public Color poisonColor = new Color(0.5f, 0f, 0.5f);
     public float blinkDuration = 0.1f;  // 깜박이는 시간
@@ -69,17 +71,22 @@ public class Player : MonoBehaviour, TakeDamage
     {
         stateMachine.FixedUpdate();
     }
+
     public void AttackDirectionCheck()
     {
+        if (isStunned || isDie) return;
           
         RaycastHit2D hit = Physics2D.Raycast(stateMachine.Player.transform.position, stateMachine.Player.transform.right, Data.playerData.BaseAttackaDirection, targetMask);
         if (hit.collider == null)
         {
             stateMachine.ChangeState(stateMachine.MoveState);
         }
-        else if(hit.collider != null && !isDie)
+        else if(hit.collider != null)
         {
+            
+
             stateMachine.ChangeState(stateMachine.AttackState);
+
         }
        
     }
@@ -94,6 +101,18 @@ public class Player : MonoBehaviour, TakeDamage
 
     }
 
+    public void StunDamage(Vector2 damagedPosition, float damage)
+    {
+        if (isStunned) return;
+          
+        healthSystem.player.HealthDecrease(damage);
+        StartCoroutine(nameof(BlinknomalDamageColor));
+        StartCoroutine(nameof(StunCoroutine));
+
+        
+    }
+
+
     public void TakeDamage(float damage)
     {
         healthSystem.player.HealthDecrease(damage);
@@ -103,17 +122,17 @@ public class Player : MonoBehaviour, TakeDamage
     public void OnDie()
     {
         StartCoroutine(nameof(WaitDieTime));
-        stateMachine.AttackState.Reset();
     }
 
-
+    
     public IEnumerator WaitDieTime()
     {
         yield return new WaitForSeconds(2.0f);
 
-        StopAllCoroutines();
         //플레이어 죽음 알림
         PlayerOnDeath?.Invoke();
+
+        Destroy(gameObject);
     }
     private IEnumerator PoisonDamage(float damage)
     {
@@ -122,8 +141,25 @@ public class Player : MonoBehaviour, TakeDamage
         {
             healthSystem.player.HealthDecrease(damage);
             StartCoroutine(nameof(BlinkPoisonDamageColor));
-            yield return new WaitForSeconds(enumy.enumyData.poisonInterval);
+            yield return new WaitForSeconds(enumy.enumyData.PoisonInterval);
         }
+    }
+
+    private IEnumerator StunCoroutine()
+    {
+        isStunned = true;
+        if (isStunned)
+        {
+            stateMachine.AttackState.isAttacking = false;
+            rb.velocity = Vector2.zero;
+
+            // 스턴 지속 시간만큼 대기
+            yield return new WaitForSeconds(enumy.enumyData.StunDuration);
+
+            // 스턴 끝
+            isStunned = false;
+        }
+       
     }
     private IEnumerator BlinknomalDamageColor()
     {
@@ -157,38 +193,5 @@ public class Player : MonoBehaviour, TakeDamage
 
     }
 
-    public void Init()
-    {
-        // 체력 시스템 초기화
-        if (healthSystem == null)
-        {
-            healthSystem = GetComponent<HealthSystem>();
-        }
-        healthSystem.player.Init();
-
-        // 죽음 상태 초기화
-        isDie = false;
-
-        // 애니메이터 초기화
-        if (animator == null)
-        {
-            animator = GetComponentInChildren<Animator>();
-        }
-        animator.Rebind();
-        animator.Update(0f);
-
-        // 상태 머신 초기화
-        if (stateMachine == null)
-        {
-            stateMachine = new PlayerStateMachine(this);
-        }
-        stateMachine.ChangeState(stateMachine.MoveState);
-
-        // 기타 필요한 변수 초기화
-        spriteRenderer.color = Color.white; // 색상 초기화
-
-        // 이벤트 핸들러 초기화
-        PlayerOnDeath = null;
-    }
-
+    
 }
