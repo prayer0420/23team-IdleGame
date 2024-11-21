@@ -31,6 +31,8 @@ public class GameManager : MonoBehaviour
 
     public bool isPuase;
 
+    private Vector2 PlayerInitPosition = new Vector2(-5.72f, -1f);
+
     private void Awake()
     {
         if (Instance == null)
@@ -44,19 +46,34 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-    }
-
     public void InitializeGame()
     {
         saveData = SaveManager.Instance.LoadGame();
+        var itemManager = ItemManager.itemManager;
 
         if (saveData == null)
         {
             saveData = new SaveData();
-        }
 
+            CreatePlayer();
+
+            if (player != null)
+            {
+                saveData.playerSaveData = new PlayerSaveData(player.Data, player.Data.playerData.BaseMaxHealth);
+            }
+            else
+            {
+                // 플레이어를 생성할 수 없는 경우 기본값 설정
+                PlayerSO defaultPlayerSO = ResourceManager.Instance.LoadResource<PlayerSO>("Data/Player");
+                saveData.playerSaveData = new PlayerSaveData(defaultPlayerSO, defaultPlayerSO.playerData.BaseMaxHealth);
+            }
+            // 인벤토리 데이터 초기화
+            saveData.inventoryData = new InventoryData(5);
+        }
+        else
+        {
+            CreatePlayer(); 
+        }
 
         CurrentChapter = saveData.currentChapter;
         CurrentStage = saveData.currentStage;
@@ -66,8 +83,20 @@ public class GameManager : MonoBehaviour
         mapManager = MapManager.Instance;
         stageManager = StageManager.Instance;
 
-        CreatePlayer();
-        InitializeManagers();
+
+        // 플레이어의 스탯을 저장된 데이터로 초기화
+        if (saveData.playerSaveData != null)
+        {
+            player.SetSaveData(saveData.playerSaveData);
+        }
+        player.PlayerOnDeath += HandlePlayerOnDeath;
+
+
+        //아이템 설정
+        ItemManager.itemManager.inventory.SetInventoryData(saveData.inventoryData);
+
+        stageManager.InitializeStageManager(player);
+
         StartStage(CurrentChapter, CurrentStage, CurrentDifficulty, false);
     }
 
@@ -76,15 +105,9 @@ public class GameManager : MonoBehaviour
         GameObject playerPrefab = ResourceManager.Instance.LoadResource<GameObject>("Prefabs/Player");
         if (playerPrefab != null)
         {
-            GameObject playerObj = Instantiate(playerPrefab, new Vector2(-1.5f, -1f), Quaternion.identity);
+            GameObject playerObj = Instantiate(playerPrefab, PlayerInitPosition, Quaternion.identity);
             player = playerObj.GetComponent<Player>();
         }
-    }
-
-
-    private void InitializeManagers()
-    {
-        stageManager.InitializeStageManager(player);
     }
 
     public void StartStage(int chapterNumber, int stageNumber, DifficultyLevel difficulty, bool isFade)
@@ -95,19 +118,20 @@ public class GameManager : MonoBehaviour
             Debug.Log("아직 잠겨있는 스테이지입니다.");
             return;
         }
-
         // 상태 업데이트
         CurrentChapter = chapterNumber;
         CurrentStage = stageNumber;
         CurrentDifficulty = difficulty;
 
+        //플레이어 위치 초기화
+        player.transform.position = PlayerInitPosition;
 
-        StageManager.Instance.StopAllCoroutines();
+        stageManager.StartStage(CurrentChapter, CurrentStage, CurrentDifficulty);
         //맵 전환
         mapManager.ChangeMap(CurrentChapter, () =>
         {
             //적 초기화
-            stageManager.StartStage(CurrentChapter, CurrentStage, CurrentDifficulty);
+            //stageManager.StartStage(CurrentChapter, CurrentStage, CurrentDifficulty);
         }, isFade);
 
         //UI업데이트
@@ -124,7 +148,6 @@ public class GameManager : MonoBehaviour
         // 스테이지 데이타에서 현재 스테이지를 클리어로 표시
         StageData currentStageData = currentChapterData.stages[CurrentStage - 1];
         currentStageData.isCleared = true;
-
 
         // STAR 업데이트
         OnStarUpdate?.Invoke(CurrentStage,true);
@@ -179,8 +202,6 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        //SaveGame();
-        //uiManager.UpdateUI(CurrentChapter, CurrentStage, CurrentDifficulty);
         Debug.Log("다음 스테이지 이동");
         StartStage(CurrentChapter,CurrentStage, CurrentDifficulty,true);
     }
@@ -194,10 +215,15 @@ public class GameManager : MonoBehaviour
 
     public void SaveGame()
     {
-        //TODO : Current뿐 아니라 전체 다 받아와야함
         saveData.currentChapter = CurrentChapter;
         saveData.currentStage = CurrentStage;
         saveData.difficulty = CurrentDifficulty;
+
+        // 플레이어 스탯 저장
+        saveData.playerSaveData = new PlayerSaveData(player.Data, player.healthSystem.player.currentValue);
+
+        // 인벤토리 데이터 저장
+        saveData.inventoryData = ItemManager.itemManager.inventory.GetInventoryData();
 
         SaveManager.Instance.SaveGame(saveData);
     }
@@ -207,11 +233,15 @@ public class GameManager : MonoBehaviour
         return saveData.progress;
     }
 
-    //public void SetDifficulty(DifficultyLevel difficulty)
-    //{
-    //    CurrentDifficulty = difficulty;
-    //    SaveGame();
-    //}
+    //플레이어 죽으면
+    public void HandlePlayerOnDeath()
+    {
+        //플레이어 재생성
+        CreatePlayer();
+        //현재 스테이지 재시작
+        StartStage(CurrentChapter, CurrentStage, CurrentDifficulty,true);
+    }
+
 
     private void OnApplicationPause(bool pauseStatus)
     {

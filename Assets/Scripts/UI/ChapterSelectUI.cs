@@ -89,9 +89,6 @@ public class ChapterSelectUI : MonoBehaviour
             DifficultyLevel difficulty = isHardMode ? DifficultyLevel.Hard : DifficultyLevel.Normal;
             chapterButtonUI.UpdateChapterButtonUI(1, chapters[i], difficulty, i+1);
             chapterButtonUI.HandleStarUpdate(chapters[i]);
-
-            //chapterButtonUI.UpdateChapterButtonUI(i + 1, chapters[i]);
-            //hapterButtonUI.HandleStarUpdate(i, chapters[i]);
         }
 
     }
@@ -101,9 +98,6 @@ public class ChapterSelectUI : MonoBehaviour
     {
         isHardMode = !isHardMode; //처음 Normal -> Hard로 변경(false에서 true로)
         UpdateDifficultyText(); //text도 바꿈
-
-        //토글한다고 게임에 영향을 주진말고, Chapter버튼을 눌렀을때 그때 영향을 줘야함
-        //GameManager.Instance.SetDifficulty(isHardMode ? DifficultyLevel.Hard : DifficultyLevel.Normal); 
 
         UpdateChapterUI();
     }

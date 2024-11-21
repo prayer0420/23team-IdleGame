@@ -20,10 +20,15 @@ public class ItemSlot : MonoBehaviour
     public void SetItem(ItemData item)
     {
         this.item = item;
-        image.sprite = item.itemSprite;
-        Color color = new Color(255, 255, 255, 255);
-        image.color = color;
+
+        if (item != null)
+        {
+            image.sprite = item.itemSprite;
+            Color color = new Color(255, 255, 255, 255);
+            image.color = color;
+        }
     }
+
 
     public void OnClickItem()
     {

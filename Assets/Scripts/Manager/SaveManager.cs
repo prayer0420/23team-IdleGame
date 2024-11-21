@@ -32,17 +32,8 @@ public class SaveManager : MonoBehaviour
 
         if (!File.Exists(SavePath))
         {
-            // 새로운 세이브 데이터 생성
-            SaveData newData = new SaveData
-            {
-                currentChapter = INITNUMBER,
-                currentStage = INITNUMBER,
-                difficulty = DifficultyLevel.Normal,
-                progress = new GameProgressData()
-            };
-            return newData;
+            return null;
         }
-
         try
         {
             string json = File.ReadAllText(SavePath);

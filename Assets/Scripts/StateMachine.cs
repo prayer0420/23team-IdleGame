@@ -7,7 +7,7 @@ public interface IState
     public void FixedUpdate();
    
 }
-public abstract class StateMachine
+public class StateMachine
 {
     protected IState currentState;
 

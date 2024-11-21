@@ -275,7 +275,7 @@ GameObject:
   - component: {fileID: 9034466463677154525}
   - component: {fileID: 5572661089271951419}
   m_Layer: 7
-  m_Name: Enemy_Chapter2
+  m_Name: Enemy_Chapter2_Poison
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -291,7 +291,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 6.15, y: -0.07547183, z: -0.070064954}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalScale: {x: 0.7, y: 0.7, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3913541350405007879}
@@ -317,13 +317,14 @@ MonoBehaviour:
     getDamageParameterName: GetDamage
     dieParameterName: Die
   <Data>k__BackingField: {fileID: 11400000, guid: 8211245b9be721348b3a6c7fa3f943f3, type: 2}
+  <monsterType>k__BackingField: 1
   rb: {fileID: 9034466463677154525}
   targetMask:
     serializedVersion: 2
     m_Bits: 64
   targetPlayer: {fileID: 0}
   isDie: 0
-  nomalDamageColor: {r: 1, g: 0, b: 0, a: 1}
+  normalDamageColor: {r: 1, g: 0, b: 0, a: 1}
   blinkDuration: 0.1
 --- !u!114 &2666890879511549068
 MonoBehaviour:

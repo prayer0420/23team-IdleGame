@@ -19,6 +19,7 @@ public class PlayerCondition : MonoBehaviour
     private void Start()
     {
         currentValue =  maxValue;
+        UpdateUI();
     }
 
     public void UpdateUI()
@@ -38,5 +39,13 @@ public class PlayerCondition : MonoBehaviour
         currentValue -= amount;
         UpdateUI();
     }
-    
+    public void SetMaxHealth(float newMaxHealth)
+    {
+        maxValue = newMaxHealth;
+        if (currentValue > maxValue)
+        {
+            currentValue = maxValue;
+        }
+        UpdateUI();
+    }
 }

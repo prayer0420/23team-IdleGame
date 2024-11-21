@@ -30,4 +30,41 @@ public class Inventory : MonoBehaviour
             }
         }
     }
+
+    public InventoryData GetInventoryData()
+    {
+        InventoryData data = new InventoryData(itemSlots.Length);
+        for (int i = 0; i < itemSlots.Length; i++)
+        {
+            ItemSlot slot = itemSlots[i];
+            string itemID = slot.item != null ? slot.item.itemID : null;
+            ItemSlotData slotData = new ItemSlotData(slot.itemType, itemID);
+
+            data.itemSlots[i] = slotData;
+        }
+        return data;
+    }
+
+    public void SetInventoryData(InventoryData data)
+    {
+        for (int i = 0; i < itemSlots.Length; i++)
+        {
+            ItemSlot slot = itemSlots[i];
+            ItemSlotData slotData = data.itemSlots[i];
+
+            if (slot.itemType == slotData.itemType)
+            {
+                if (!string.IsNullOrEmpty(slotData.itemID))
+                {
+                    ItemData item = ItemManager.itemManager.GetItemByID(slotData.itemID);
+                    slot.SetItem(item);
+                }
+                else
+                {
+                    slot.SetItem(null);
+                }
+            }
+        }
+    }
+
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public interface TakeDamage
 {
@@ -13,6 +14,7 @@ public class Player : MonoBehaviour, TakeDamage
     [field: Header("Animation")]
     [field: SerializeField] public AnimationData animationData;
     [field: SerializeField] public PlayerSO Data { get;  set; }
+    [field: SerializeField] public EnumySO enumy { get; set; }
 
     public Animator animator {  get; private set; }
     public HealthSystem healthSystem { get; private set; }
@@ -20,27 +22,39 @@ public class Player : MonoBehaviour, TakeDamage
     public Rigidbody2D rb;
     public LayerMask targetMask;
     private SpriteRenderer spriteRenderer;
+    private Coroutine poisonCoroutine;
     public bool isDie = false;
     private bool isPoisoned = false;  // 독 상태 여부
     public Color nomalDamageColor = Color.red;  // 데미지 시 색상
     public Color poisonColor = new Color(0.5f, 0f, 0.5f);
     public float blinkDuration = 0.1f;  // 깜박이는 시간
 
+    public PlayerSaveData playerSaveData;
 
+    public Action PlayerOnDeath;
 
     private void Awake()
     {
+        healthSystem = GetComponent<HealthSystem>();
+
+        playerSaveData = new PlayerSaveData(Data, Data.playerData.BaseMaxHealth);
+        playerSaveData.BaseDamage = Data.playerData.BaseDamage;
+        playerSaveData.BaseAttackRate = Data.playerData.BaseAttackRate;
+        playerSaveData.BaseMaxHealth = Data.playerData.BaseMaxHealth;
+        playerSaveData.BaseAttackDirection = Data.playerData.BaseAttackaDirection;
+        playerSaveData.BaseSpeed = Data.playerData.BaseSpeed;
+        playerSaveData.CurrentHealth = Data.playerData.BaseMaxHealth;
+
+
         animationData.Initialize();
         animator = GetComponentInChildren<Animator>();
         stateMachine = new PlayerStateMachine(this);
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-      
+
     }
     void Start()
     {
         stateMachine.ChangeState(stateMachine.MoveState);
-        healthSystem = GetComponent<HealthSystem>();
-       
     }
 
    
@@ -72,13 +86,19 @@ public class Player : MonoBehaviour, TakeDamage
     }
     public void ApplyPoisonDamage(float damage)
     {
-        healthSystem.player.HealthDecrease(damage);
+        if (poisonCoroutine != null)
+        {
+            StopCoroutine(poisonCoroutine);
+        }
+
+        poisonCoroutine = StartCoroutine(PoisonDamage(damage));
+
     }
+
+
 
     public void TakeDamage(float damage)
     {
-        Debug.Log(healthSystem.player.currentValue);
-        
         healthSystem.player.HealthDecrease(damage);
         StartCoroutine(nameof(BlinknomalDamageColor));
 
@@ -86,7 +106,6 @@ public class Player : MonoBehaviour, TakeDamage
     public void OnDie()
     {
         StartCoroutine(nameof(WaitDieTime));
-       
     }
 
     
@@ -94,13 +113,50 @@ public class Player : MonoBehaviour, TakeDamage
     {
         yield return new WaitForSeconds(2.0f);
 
-        Destroy(gameObject);
+        //플레이어 죽음 알림
+        PlayerOnDeath?.Invoke();
 
+        Destroy(gameObject);
+    }
+    private IEnumerator PoisonDamage(float damage)
+    {
+        isPoisoned = true;
+        while (isPoisoned)
+        {
+            healthSystem.player.HealthDecrease(damage);
+            StartCoroutine(nameof(BlinkPoisonDamageColor));
+            yield return new WaitForSeconds(enumy.enumyData.poisonInterval);
+        }
     }
     private IEnumerator BlinknomalDamageColor()
     {
        spriteRenderer.color = nomalDamageColor;
         yield return new WaitForSeconds(blinkDuration);
         spriteRenderer.color = Color.white;
+    }
+
+    private IEnumerator BlinkPoisonDamageColor()
+    {
+        spriteRenderer.color = poisonColor;
+        yield return new WaitForSeconds(blinkDuration);
+        spriteRenderer.color = Color.white;
+    }
+
+
+    public void SetSaveData(PlayerSaveData data)
+    {
+        playerSaveData = data;
+
+        // 플레이어의 스탯을 저장된 데이터로 설정
+        Data.playerData.BaseDamage = playerSaveData.BaseDamage;
+        Data.playerData.BaseAttackRate = playerSaveData.BaseAttackRate;
+        Data.playerData.BaseMaxHealth = playerSaveData.BaseMaxHealth;
+        Data.playerData.BaseAttackaDirection = playerSaveData.BaseAttackDirection;
+        Data.playerData.BaseSpeed = playerSaveData.BaseSpeed;
+
+        // 체력 시스템 업데이트
+        healthSystem.player.SetMaxHealth(playerSaveData.BaseMaxHealth);
+        healthSystem.player.currentValue = playerSaveData.CurrentHealth;
+
     }
 }

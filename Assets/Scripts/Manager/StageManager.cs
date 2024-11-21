@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class StageManager : MonoBehaviour
 {
@@ -31,45 +32,103 @@ public class StageManager : MonoBehaviour
     public void StartStage(int chapter, int stage, DifficultyLevel difficulty)
     {
         enemyKillCount = 0;
-        StopAllCoroutines();
         //스테이지 시작 될 때 적 초기화
         ClearEnemies();
+        StopAllCoroutines();
         //적 생성(챕터, 스테이지, 난이도에 따른)
         StartCoroutine(SpawnEnemies(chapter, stage, difficulty));
-        //TODO: Player달려오기
     }
 
-    //적 생성(코루틴, 2초 마다)
     private IEnumerator SpawnEnemies(int chapter, int stage, DifficultyLevel difficulty)
     {
-        //스테이지 3에서는 보스맵 1마리만 출현
-        int enemyCount = (stage == 3) ? 1 : 5;
-        
-        //적들을 enmies 리스트에 저장하여 관리
-        enemies = new Enumy[enemyCount];
-
-        string prefabPath = $"Prefabs/Enemy/Enemy_Chapter{chapter}";
-        if (difficulty == DifficultyLevel.Hard)
+        // 보스 스테이지
+        if (stage == 3)
         {
-            //하드모드의 몬스터는 이름 뒤에 _Hard붙이기
-            prefabPath += "_Hard";
+            string prefabPath = $"Prefabs/Enemy/Enemy_Chapter{chapter}_Boss";
+            if (difficulty == DifficultyLevel.Hard)
+            {
+                prefabPath += "_Hard";
+            }
+
+            // 보스 몬스터 로드
+            GameObject bossPrefab = ResourceManager.Instance.LoadResource<GameObject>(prefabPath);
+            if (bossPrefab == null)
+                yield break;
+
+            GameObject bossObj = Instantiate(bossPrefab);
+            Enumy boss = bossObj.GetComponent<Enumy>();
+            boss.monsterType = MonsterType.normal; // 보스는 일반 타입
+            boss.OnDeath += (enemy) => HandleEnemyDeath(enemy);
+            bossObj.transform.position = GetRandomSpawnPosition();
+
+            enemies = new Enumy[1];
+            enemies[0] = boss;
         }
-
-        //리소스 매니저에서 적 생성
-        GameObject enemyPrefab = ResourceManager.Instance.LoadResource<GameObject>(prefabPath);
-        //프리팹이 없으면 빽
-        if (enemyPrefab == null)
-            yield break;
-        
-        for (int i = 0; i < enemyCount; i++)
+        else // 일반적인 스테이지
         {
-            GameObject enemyObj = Instantiate(enemyPrefab);
-            Enumy enemy = enemyObj.GetComponent<Enumy>();
-            //enemy.InitializeEnemy(player);
-            enemy.OnDeath += (enemy) => HandleEnemyDeath(enemy); //죽을때 이벤트 발생 구독
-            enemyObj.transform.position = GetRandomSpawnPosition();
-            enemies[i] = enemy;
-            yield return new WaitForSeconds(2f);
+            int normalEnemyCount = 5;
+            int poisonEnemyCount = 0;
+
+            if (chapter >= 2)
+            {
+                normalEnemyCount = 3;
+                poisonEnemyCount = 2;
+            }
+
+            int totalEnemyCount = normalEnemyCount + poisonEnemyCount;
+            enemies = new Enumy[totalEnemyCount];
+            int enemyIndex = 0;
+
+            // 일반 몬스터 생성
+            string normalPrefabPath = $"Prefabs/Enemy/Enemy_Chapter{chapter}_Normal";
+            if (difficulty == DifficultyLevel.Hard)
+            {
+                normalPrefabPath += "_Hard";
+            }
+
+            GameObject normalEnemyPrefab = ResourceManager.Instance.LoadResource<GameObject>(normalPrefabPath);
+            if (normalEnemyPrefab == null)
+                yield break;
+
+            for (int i = 0; i < normalEnemyCount; i++)
+            {
+                GameObject enemyObj = Instantiate(normalEnemyPrefab);
+                Enumy enemy = enemyObj.GetComponent<Enumy>();
+                enemy.monsterType = MonsterType.normal;
+                enemy.OnDeath += (e) => HandleEnemyDeath(e);
+                enemyObj.transform.position = GetRandomSpawnPosition();
+
+                enemies[enemyIndex++] = enemy;
+
+                yield return new WaitForSeconds(2f);
+            }
+
+            // 독 몬스터 생성
+            if (poisonEnemyCount > 0)
+            {
+                string poisonPrefabPath = $"Prefabs/Enemy/Enemy_Chapter{chapter}_Poison";
+                if (difficulty == DifficultyLevel.Hard)
+                {
+                    poisonPrefabPath += "_Hard";
+                }
+
+                GameObject poisonEnemyPrefab = ResourceManager.Instance.LoadResource<GameObject>(poisonPrefabPath);
+                if (poisonEnemyPrefab == null)
+                    yield break;
+
+                for (int i = 0; i < poisonEnemyCount; i++)
+                {
+                    GameObject enemyObj = Instantiate(poisonEnemyPrefab);
+                    Enumy enemy = enemyObj.GetComponent<Enumy>();
+                    enemy.monsterType = MonsterType.poison;
+                    enemy.OnDeath += (e) => HandleEnemyDeath(e);
+                    enemyObj.transform.position = GetRandomSpawnPosition();
+
+                    enemies[enemyIndex++] = enemy;
+
+                    yield return new WaitForSeconds(2f);
+                }
+            }
         }
     }
 
@@ -91,7 +150,8 @@ public class StageManager : MonoBehaviour
     private bool AreAllEnemiesDead()
     {
         enemyKillCount++;
-        if(enemyKillCount == enemies.Length)
+        Debug.Log($"현재 몬스터 {enemyKillCount} 마리 처치, 처치해야할 몬스터 {enemies.Length}마리");
+        if(enemyKillCount >= enemies.Length)
         {
             enemyKillCount = 0;
             return true;
@@ -112,6 +172,7 @@ public class StageManager : MonoBehaviour
                 }
             }
         }
+        Debug.Log("적 모두 파괴");
     }
 
     private Vector2 GetRandomSpawnPosition()

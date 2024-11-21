@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52713438ff97e664bad384aa37ca1f25, type: 3}
   m_Name: helmet2
   m_EditorClassIdentifier: 
-  itemSprite: {fileID: 21300000, guid: 896dada9aa8b8444b8145f80381d5fda, type: 3}
-  itemName: KnightHelm
-  itemType: 0
-  itemStat: 20
-  itemDescription: this is KnightHelm
+  itemID: 3
+  itemSprite: {fileID: 21300000, guid: 9d4ad9585d881b9469236aa4e598a8b1, type: 3}
+  itemName: "\uC815\uC2DD\uAE30\uC0AC\uC758 \uD5EC\uBA67"
+  itemType: 1
+  itemStat: 25
+  itemDescription: "\uC815\uC2DD\uAE30\uC0AC\uAC00 \uCC29\uC6A9\uD558\uB294 \uD5EC\uBA67"

@@ -11,6 +11,9 @@ public class ItemManager : MonoBehaviour
     public UIItemInfo uiItemInfo;
     public UIItemChoice uiItemChoice;
 
+    private ItemData[] itemDatas;
+    private Dictionary<string, ItemData> itemDataDictionary;
+
     private void Awake()
     {
         if(itemManager == null)
@@ -31,6 +34,26 @@ public class ItemManager : MonoBehaviour
     {
         uiItemInfo.gameObject.SetActive(true);
         uiItemChoice.gameObject.SetActive(true);
+
+
+        //아이템 데이터들 가져오기(리펙토링 대상..)
+        itemDatas = Resources.LoadAll<ItemData>("ScriptableObject");
+        itemDataDictionary = new Dictionary<string, ItemData>();
+
+        for (int i = 0; i < itemDatas.Length; i++)
+        {
+            ItemData itemData = itemDatas[i];
+            itemDataDictionary[itemData.itemID] = itemData;
+        }
+    }
+
+    public ItemData GetItemByID(string itemID)
+    {
+        if (itemDataDictionary.TryGetValue(itemID, out ItemData itemData))
+        {
+            return itemData;
+        }
+        return null;
     }
 
     public void AddCharaterStat(ItemData item)

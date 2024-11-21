@@ -5,15 +5,10 @@ public class EnumyPoisonAttack : EnumyBaseState
     public EnumyPoisonAttack(EnumyStateMachine stateMachine) : base(stateMachine) { }
 
     private float lastAttackTime;
-    private float poisonAttackTime;
-
-    float poisonDamage;
-    float timer;
     public bool isAttacking;
 
     public override void Enter()
     {
-        poisonDamage = enumyData.poisonDamage;
        
     }
 
