@@ -22,5 +22,5 @@ MonoBehaviour:
     <PoisonInterval>k__BackingField: 0.3
     <PoisonDamage>k__BackingField: 5
     <KnockbackForce>k__BackingField: 1
-    <StunDuration>k__BackingField: 1
+    <StunDuration>k__BackingField: 3
     <StunDamage>k__BackingField: 2

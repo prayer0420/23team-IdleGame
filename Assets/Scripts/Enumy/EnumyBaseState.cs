@@ -7,7 +7,7 @@ public abstract class EnumyBaseState : IState
     protected EnumyStateMachine stateMachine;
     protected readonly EnumyData enumyData;
 
-    
+    protected Vector2 enumyStartPosition = new Vector2(-2.96f, 0f);
 
     protected EnumyBaseState(EnumyStateMachine stateMachine)
     {

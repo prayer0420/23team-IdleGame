@@ -7,8 +7,8 @@ public class EnumyMove : EnumyBaseState
 {
     public EnumyMove(EnumyStateMachine stateMachine) : base(stateMachine) { }
 
-    private Vector3 enumyStartPosition;
-   private Vector3 enumyPosition;
+    private Vector2 enumyTransform;
+  
    private float enumySpeed;
     private float enumyDistance;
     
@@ -17,7 +17,7 @@ public class EnumyMove : EnumyBaseState
     {
         enumySpeed = enumyData.Speed = 1f; // 利 立辟 加档
         enumyDistance = enumyData.AttackDirection;      // 利 荤沥芭府
-        enumyStartPosition = stateMachine.Enumy.transform.position;
+        enumyTransform = enumyStartPosition;
        
         StartAnimation(stateMachine.Enumy.animationData.MovingParameterHash);
 
@@ -31,11 +31,11 @@ public class EnumyMove : EnumyBaseState
 
     public override void FixedUpdate()
     {
-        if (stateMachine.Enumy.targetPlayer.isStunned)
-        {
-            stateMachine.Enumy.rb.velocity = Vector3.zero;
-            ReturnMove();
-        }
+        //if (stateMachine.Enumy.targetPlayer.isStunned)
+        //{
+        //    stateMachine.Enumy.rb.velocity = Vector3.zero;
+        //    //ReturnMove();
+        //}
         PositionMove(stateMachine.Enumy.targetPlayer.transform.position);
     }
 
@@ -68,13 +68,13 @@ public class EnumyMove : EnumyBaseState
         
 
     }
-    public void ReturnMove()
-    {
-        Vector2 enumyPosition = stateMachine.Enumy.transform.position;
-        Vector2 distance = enumyStartPosition - (Vector3)enumyPosition;
-        Vector2 move = distance.normalized * enumySpeed * Time.deltaTime;
-        stateMachine.Enumy.rb.MovePosition(enumyPosition + move);
+    //public void ReturnMove()
+    //{
+    //    Vector2 enumyPosition = stateMachine.Enumy.transform.position;
+    //    Vector2 distance = enumyTransform - enumyPosition;
+    //    Vector2 move = distance.normalized * enumySpeed * Time.deltaTime;
+    //    stateMachine.Enumy.rb.MovePosition(enumyPosition + move);
 
 
-    }
+    //}
 }

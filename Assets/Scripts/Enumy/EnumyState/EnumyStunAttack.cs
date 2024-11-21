@@ -14,7 +14,7 @@ public class EnumyStunAttack : EnumyBaseState
     Vector2 damagedPosition = new Vector2(-2.78f, 0);
     public override void Enter()
     {
-        
+        StunAttack();
     }
 
     public override void Exit()
@@ -28,7 +28,7 @@ public class EnumyStunAttack : EnumyBaseState
     public override void Update()
     {
        
-        StunAttack();
+       
     }
 
     public void StunAttack()
