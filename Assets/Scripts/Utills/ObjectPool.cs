@@ -34,15 +34,14 @@ public class ObjectPool<T> where T : UnityEngine.Object
         {
             obj = Object.Instantiate(prefab, parentTransform);
         }
-        Debug.Log($"{obj.name} 가져오기");
-
+        //Debug.Log($"{obj.name} 가져오기");
         ActivateInstance(obj);
         return obj;
     }
 
     public void ReturnToPool(T obj)
     {
-        Debug.Log($"{obj.name} 반환");
+        //Debug.Log($"{obj.name} 반환");
         DeactivateInstance(obj);
         pool.Enqueue(obj);
     }

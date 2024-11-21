@@ -29,7 +29,7 @@ public class ChapterSelectUI : MonoBehaviour
         ChapterSelectPanel.SetActive(!ChapterSelectPanel.activeSelf);
         if (ChapterSelectPanel.activeSelf)
         {
-            Debug.Log("챕터 패널 창 열었을 때");
+            //Debug.Log("챕터 패널 창 열었을 때");
             UpdateDifficultyText();
             if (GameManager.Instance.CurrentDifficulty == DifficultyLevel.Hard)
             {

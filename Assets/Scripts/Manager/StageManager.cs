@@ -10,7 +10,7 @@ public class StageManager : MonoBehaviour
     private Enumy[] enemies;
     private int enemyKillCount;
     private List<Enumy> activeEnemies = new List<Enumy>();
-    private readonly Vector2 bossPosition = new Vector2(-5.64f , -0.62f);
+    private readonly Vector2 bossPosition = new Vector2(5.64f , -0.62f);
 
 
     private Dictionary<string, ObjectPool<Enumy>> enemyPools = new Dictionary<string, ObjectPool<Enumy>>();
@@ -86,7 +86,6 @@ public class StageManager : MonoBehaviour
                 enemy.transform.position = GetRandomSpawnPosition();
 
                 enemies[enemyIndex++] = enemy;
-                Debug.Log($"노말 {normalEnemyCount} 중 {i}마리 생성");
                 yield return new WaitForSeconds(2f); // 적 생성 간격 조절
             }
 
@@ -141,16 +140,10 @@ public class StageManager : MonoBehaviour
     private void HandleEnemyDeath(Enumy enemy)
     {
         enemy.OnDeath -= HandleEnemyDeath;
-        Debug.Log($"죽었다1");
         string prefabPath = enemy.PrefabPath;
         if (enemyPools.TryGetValue(prefabPath, out ObjectPool<Enumy> enemyPool))
         {
             enemyPool.ReturnToPool(enemy);
-            Debug.Log($"죽었다2");
-        }
-        else
-        {
-            Debug.LogError($"적 풀을 찾을 수 없음: {prefabPath}");
         }
 
         if (AreAllEnemiesDead())
@@ -168,7 +161,6 @@ public class StageManager : MonoBehaviour
     private bool AreAllEnemiesDead()
     {
         enemyKillCount++;
-        Debug.Log($"현재 몬스터 {enemyKillCount} 마리 처치, 처치해야할 몬스터 {enemies.Length}마리");
         if (enemyKillCount >= enemies.Length)
         {
             enemyKillCount = 0;
@@ -199,9 +191,7 @@ public class StageManager : MonoBehaviour
                 }
             }
         }
-        Debug.Log("적 모두 비활성화");
     }
-
     private Vector2 GetRandomSpawnPosition()
     {
         return new Vector2(5.64f, Random.Range(-1.034f, -0.834f));
