@@ -37,6 +37,8 @@ public class Player : MonoBehaviour, TakeDamage
 
     private string hitSFXPath = "Audio/SFX/PlayerHit";
 
+    private float timer = 0;
+
     private void Awake()
     {
         healthSystem = GetComponent<HealthSystem>();
@@ -145,6 +147,17 @@ public class Player : MonoBehaviour, TakeDamage
             StartCoroutine(nameof(BlinkPoisonDamageColor));
             yield return new WaitForSeconds(enumy.enumyData.PoisonInterval);
         }
+        if (timer < enumy.enumyData.PoisonDuration)
+        {
+            timer += Time.deltaTime;
+        }
+        else if (timer >= enumy.enumyData.PoisonDuration)
+        {
+            isPoisoned = false;
+            timer = 0;
+        }
+
+
     }
 
     private IEnumerator StunCoroutine()

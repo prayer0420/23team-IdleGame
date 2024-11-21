@@ -162,14 +162,23 @@ MonoBehaviour:
     getDamageParameterName: GetDamage
     dieParameterName: Die
   <Data>k__BackingField: {fileID: 11400000, guid: a58ac488891ca08438af4f40eb008210, type: 2}
+  <enumy>k__BackingField: {fileID: 11400000, guid: 48f1a69e7a43338498551e194add90db, type: 2}
   rb: {fileID: 2037098177899365165}
   targetMask:
     serializedVersion: 2
     m_Bits: 128
   isDie: 0
+  isStunned: 0
   nomalDamageColor: {r: 1, g: 0, b: 0, a: 1}
   poisonColor: {r: 0.5, g: 0, b: 0.5, a: 1}
   blinkDuration: 0.1
+  playerSaveData:
+    BaseDamage: 0
+    BaseAttackRate: 0
+    BaseMaxHealth: 0
+    BaseAttackDirection: 0
+    BaseSpeed: 0
+    CurrentHealth: 0
 --- !u!114 &1146330476851126305
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -490,6 +499,7 @@ MonoBehaviour:
   slider: {fileID: 1961728511793063749}
   player: {fileID: 3768054592070376063}
   currentValue: 0
+  maxValue: 0
 --- !u!1 &6003211885714599580
 GameObject:
   m_ObjectHideFlags: 0
