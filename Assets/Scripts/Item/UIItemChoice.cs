@@ -59,6 +59,9 @@ public class UIItemChoice : MonoBehaviour
             ItemManager.itemManager.AddCharaterStat(newItem);
         }
 
+        Debug.Log("공격력 : " + GameManager.Instance.player.Data.playerData.BaseDamage);
+        Debug.Log("체력 : " + GameManager.Instance.player.Data.playerData.BaseMaxHealth);
+
         gameObject.SetActive(false);
         this.newItem = null;
         equippedItem = null;
