@@ -4213,13 +4213,15 @@ MonoBehaviour:
   bgmSource: {fileID: 2128219391}
   sfxSource: {fileID: 2128219390}
   bgmClips:
-  - {fileID: 8300000, guid: 070ad4920d2fcbc43940fe99bc6d6bec, type: 3}
-  PlayerAtackClip: {fileID: 0}
-  PlayerHitClip: {fileID: 0}
-  gachaClip: {fileID: 0}
+  - {fileID: 8300000, guid: f045f7d296ce2c945a66e3352ffe94f1, type: 3}
+  - {fileID: 8300000, guid: 4754f1215b019b848bf8688c515afa99, type: 3}
+  - {fileID: 8300000, guid: aabcb61ee83cdc64b9c689eeaed4ed70, type: 3}
+  PlayerAtackClip: {fileID: 8300000, guid: 0e57cd1efdf3a8e42957a38d330ac018, type: 3}
+  PlayerHitClip: {fileID: 8300000, guid: 63165768298196944aef832c0cc98869, type: 3}
+  gachaClip: {fileID: 8300000, guid: 9c28371791fd248498a044bb910eedcd, type: 3}
   UiClickClip: {fileID: 8300000, guid: f441ddefa089d9647a3aeb4a957f8402, type: 3}
   masterVolume: 0.384
-  bgmVolume: 0.407
+  bgmVolume: 0.384
   sfxVolume: 0.399
 --- !u!114 &2132803244 stripped
 MonoBehaviour:

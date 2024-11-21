@@ -177,7 +177,7 @@ public class StageManager : MonoBehaviour
 
     private Vector2 GetRandomSpawnPosition()
     {
-        return new Vector2(5.64f, Random.Range(-1.22f, -0.876f));
+        return new Vector2(5.64f, Random.Range(-1.034f, -0.834f));
         //return new Vector2(5.64f, -1.3f);
     }
 }

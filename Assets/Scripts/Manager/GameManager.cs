@@ -89,8 +89,6 @@ public class GameManager : MonoBehaviour
         {
             player.SetSaveData(saveData.playerSaveData);
         }
-        player.PlayerOnDeath += HandlePlayerOnDeath;
-
 
         //아이템 설정
         ItemManager.itemManager.inventory.SetInventoryData(saveData.inventoryData);
@@ -108,6 +106,7 @@ public class GameManager : MonoBehaviour
             GameObject playerObj = Instantiate(playerPrefab, PlayerInitPosition, Quaternion.identity);
             player = playerObj.GetComponent<Player>();
         }
+        player.PlayerOnDeath += HandlePlayerOnDeath;
     }
 
     public void StartStage(int chapterNumber, int stageNumber, DifficultyLevel difficulty, bool isFade)
@@ -236,6 +235,7 @@ public class GameManager : MonoBehaviour
     //플레이어 죽으면
     public void HandlePlayerOnDeath()
     {
+        player.PlayerOnDeath -= HandlePlayerOnDeath;
         //플레이어 재생성
         CreatePlayer();
         //현재 스테이지 재시작
