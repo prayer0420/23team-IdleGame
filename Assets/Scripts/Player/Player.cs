@@ -193,5 +193,32 @@ public class Player : MonoBehaviour, TakeDamage
 
     }
 
-    
+    public void Init()
+    {
+        if (healthSystem == null)
+        {
+            healthSystem = GetComponent<HealthSystem>();
+        }
+        healthSystem.player.Init();
+
+        isDie = false;
+
+        if (animator == null)
+        {
+            animator = GetComponentInChildren<Animator>();
+        }
+        animator.Rebind();
+        animator.Update(0f);
+
+        if (stateMachine == null)
+        {
+            stateMachine = new PlayerStateMachine(this);
+        }
+        stateMachine.ChangeState(stateMachine.MoveState);
+
+        spriteRenderer.color = Color.white; 
+
+        PlayerOnDeath = null;
+    }
+
 }
