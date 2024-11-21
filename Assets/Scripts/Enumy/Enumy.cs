@@ -120,7 +120,6 @@ public class Enumy : MonoBehaviour, TakeDamage
     public void TakeDamage(float damage)
     {
         healthSystem.enumy.HealthDecrease(damage);
-        Debug.Log("맞았다");
         StopAllCoroutines();
         StartCoroutine(nameof(BlinkDamageColor));
     }
@@ -129,7 +128,6 @@ public class Enumy : MonoBehaviour, TakeDamage
     {
         gameObject.layer = LayerMask.NameToLayer("Default");
         StartCoroutine(nameof(FadeOutAndDie));
-        Debug.Log("죽었다 알림");
     }
 
     private IEnumerator FadeOutAndDie()
@@ -149,9 +147,6 @@ public class Enumy : MonoBehaviour, TakeDamage
 
         rbSprite.color = new Color(startColor.r, startColor.g, startColor.b, 0f);
         OnDeath?.Invoke(this);
-        Debug.Log("죽었다 알림");
-
-        //Destroy(gameObject);
     }
 
     private IEnumerator BlinkDamageColor()

@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Player
   m_EditorClassIdentifier: 
   <playerData>k__BackingField:
-    <BaseDamage>k__BackingField: 10
-    <BaseAttackRate>k__BackingField: 0.5
-    <BaseMaxHealth>k__BackingField: 100
+    <BaseDamage>k__BackingField: 35.5
+    <BaseAttackRate>k__BackingField: 0.51
+    <BaseMaxHealth>k__BackingField: 300
     <BaseAttackaDirection>k__BackingField: 0.6
     <BaseSpeed>k__BackingField: 0

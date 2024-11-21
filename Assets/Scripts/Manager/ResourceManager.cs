@@ -36,11 +36,34 @@ public class ResourceManager : MonoBehaviour
             {
                 resourceCache[path] = resource;
             }
-            else
-            {
-                Debug.LogError($"경로에 리소스가 없음: {path}");
-            }
             return resource;
+        }
+    }
+    public T[] LoadAllResources<T>() where T : Object
+    {
+        string cacheKey = typeof(T).FullName;
+        if (resourceArrayCache.TryGetValue(cacheKey, out Object[] cachedResources))
+        {
+            T[] resources = new T[cachedResources.Length];
+            for (int i = 0; i < cachedResources.Length; i++)
+            {
+                resources[i] = cachedResources[i] as T;
+            }
+            return resources;
+        }
+        else
+        {
+            T[] resources = Resources.LoadAll<T>(""); // 빈 문자열로 모든 리소스 로드...
+            if (resources != null && resources.Length > 0)
+            {
+                Object[] objects = new Object[resources.Length];
+                for (int i = 0; i < resources.Length; i++)
+                {
+                    objects[i] = resources[i];
+                }
+                resourceArrayCache[cacheKey] = objects;
+            }
+            return resources;
         }
     }
 
@@ -67,10 +90,6 @@ public class ResourceManager : MonoBehaviour
                     objects[i] = resources[i];
                 }
                 resourceArrayCache[path] = objects;
-            }
-            else
-            {
-                Debug.LogError($"경로에 리소스가 없음: {path}");
             }
             return resources;
         }

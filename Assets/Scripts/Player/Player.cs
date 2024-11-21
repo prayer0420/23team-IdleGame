@@ -124,7 +124,6 @@ public class Player : MonoBehaviour, TakeDamage
     {
         StartCoroutine(nameof(WaitDieTime));
         stateMachine.AttackState.Reset();
-
     }
 
 
@@ -218,6 +217,8 @@ public class Player : MonoBehaviour, TakeDamage
             stateMachine = new PlayerStateMachine(this);
         }
         stateMachine.ChangeState(stateMachine.MoveState);
+
+        stateMachine.AttackState.Reset();
 
         spriteRenderer.color = Color.white; 
 

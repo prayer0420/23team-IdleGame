@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,12 +12,10 @@ public class PlayerAttackState : PlayerBaseState
 
     public override void Enter()
     {
-        Reset();
     }
 
     public override void Exit()
     {
-        Reset();
     }
 
     public override void Update()
@@ -34,13 +31,12 @@ public class PlayerAttackState : PlayerBaseState
         
         if (Time.time - lastAttackTime > playerData.BaseAttackRate)
         {
-
             isAttacking = true;
 
             lastAttackTime = Time.time;
             if (isAttacking) 
             {
-            SetTriggerAnimation(stateMachine.Player.animationData.AttackParameterHash);
+                SetTriggerAnimation(stateMachine.Player.animationData.AttackParameterHash);
                 RaycastHit2D hit = Physics2D.Raycast(stateMachine.Player.transform.position, stateMachine.Player.transform.right, playerData.BaseAttackaDirection,stateMachine.Player.targetMask);
 
                 if (hit.collider != null)
