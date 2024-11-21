@@ -19,7 +19,7 @@ public class Player : MonoBehaviour, TakeDamage
 
     public Animator animator {  get; private set; }
     public HealthSystem healthSystem { get; private set; }
-    private PlayerStateMachine stateMachine;
+    public PlayerStateMachine stateMachine;
     public Rigidbody2D rb;
     public LayerMask targetMask;
     private SpriteRenderer spriteRenderer;
@@ -122,17 +122,19 @@ public class Player : MonoBehaviour, TakeDamage
     public void OnDie()
     {
         StartCoroutine(nameof(WaitDieTime));
+        stateMachine.AttackState.Reset();
+
     }
 
-    
+
     public IEnumerator WaitDieTime()
     {
         yield return new WaitForSeconds(2.0f);
-
+        StopAllCoroutines();
         //플레이어 죽음 알림
         PlayerOnDeath?.Invoke();
 
-        Destroy(gameObject);
+        //Destroy(gameObject);
     }
     private IEnumerator PoisonDamage(float damage)
     {

@@ -9,7 +9,6 @@ public class StageManager : MonoBehaviour
     private Player player;
     private Enumy[] enemies;
     private int enemyKillCount;
-    private List<Enumy> activeEnemies = new List<Enumy>();
     private readonly Vector2 bossPosition = new Vector2(5.64f , -0.62f);
 
 
@@ -139,11 +138,14 @@ public class StageManager : MonoBehaviour
 
     private void HandleEnemyDeath(Enumy enemy)
     {
+        Debug.Log("Àû Á×À½");
         enemy.OnDeath -= HandleEnemyDeath;
+        
         string prefabPath = enemy.PrefabPath;
         if (enemyPools.TryGetValue(prefabPath, out ObjectPool<Enumy> enemyPool))
         {
             enemyPool.ReturnToPool(enemy);
+            Debug.Log("Àû¤² ¤¿¤¤È¯1");
         }
 
         if (AreAllEnemiesDead())

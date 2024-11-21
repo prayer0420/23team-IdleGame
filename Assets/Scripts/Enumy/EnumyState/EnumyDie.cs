@@ -10,6 +10,8 @@ public class EnumyDie : EnumyBaseState
     public override void Enter()
     {
         stateMachine.Enumy.isDie = true;
+        stateMachine.Enumy.OnDie();
+
     }
 
     public override void Exit()
