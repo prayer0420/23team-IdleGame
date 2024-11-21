@@ -12,12 +12,11 @@ public class PlayerAttackState : PlayerBaseState
 
     public override void Enter()
     {
-        
-       
     }
 
     public override void Exit()
     {
+
     }
 
     public override void Update()
@@ -58,7 +57,20 @@ public class PlayerAttackState : PlayerBaseState
         else isAttacking = false;
         
     }
+    public void Reset()
+    {
+        isAttacking = false;
 
+        // 적 큐 초기화
+        foreach (var enemy in enemyQueue)
+        {
+            if (enemy != null)
+            {
+                enemy.OnDeath -= RemoveEnemy;
+            }
+        }
+        enemyQueue.Clear();
+    }
     public void AddEnemy(Enumy enumy)
     {
         if (!enemyQueue.Contains(enumy))
@@ -93,6 +105,7 @@ public class PlayerAttackState : PlayerBaseState
             else
             {
                 enemyQueue.Dequeue();
+                
                 enemy.OnDeath -= RemoveEnemy;
             }
         }

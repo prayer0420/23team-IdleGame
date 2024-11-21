@@ -2,16 +2,22 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 using System;
+using System.Collections.Generic;
+using UnityEngine.Pool;
 
 public class MapManager : MonoBehaviour
 {
+    public static MapManager Instance { get; private set; }
     private GameObject background;
     [SerializeField] private Image fade;
-    private GameObject currentMap;
     private GameObject nextMap;
     public bool IsFade = false;
 
-    public static MapManager Instance { get; private set; }
+    private GameObject currentMap;
+
+    private ObjectPool<GameObject> currentMapPool;
+    private Dictionary<string, ObjectPool<GameObject>> mapPools = new Dictionary<string, ObjectPool<GameObject>>();
+
 
     private void Awake()
     {
@@ -29,44 +35,67 @@ public class MapManager : MonoBehaviour
     public void ChangeMap(int chapterNumber, Action callback, bool isFade)
     {
         StopAllCoroutines();
-        StartCoroutine(FadeOutAndIn(chapterNumber, callback, isFade));
+        StartCoroutine(ChangeMapCoroutine(chapterNumber, callback, isFade));
+    }
+
+
+    private IEnumerator ChangeMapCoroutine(int chapterNumber, Action callback, bool isFade)
+    {
+        if (isFade)
+        {
+            yield return StartCoroutine(Fade(0, 1));
+        }
+
+        LoadMap(chapterNumber);
+
+        if (isFade)
+        {
+            yield return StartCoroutine(Fade(1, 0));
+        }
+
+        callback?.Invoke();
     }
 
     private void LoadMap(int chapterNumber)
     {
-        if (currentMap != null)
+        // 현재 맵을 풀에 반환
+        if (currentMap != null && currentMapPool != null)
         {
-            Destroy(currentMap);
+            currentMapPool.ReturnToPool(currentMap);
+            currentMap = null;
+            currentMapPool = null;
         }
 
-        string mapPath = $"Prefabs/Background/Background_Chapter{chapterNumber}";
+        string mapPath = GetMapPath(chapterNumber);
 
-        if (GameManager.Instance.CurrentDifficulty== DifficultyLevel.Hard)
+        //리소스매니저, 오브젝트풀을 활용해 맵 생성
+        if (!mapPools.TryGetValue(mapPath, out ObjectPool<GameObject> mapPool))
         {
-            //하드모드의 몬스터는 이름 뒤에 _Hard붙이기
-            mapPath += "_Hard";
+            GameObject mapPrefab = ResourceManager.Instance.LoadResource<GameObject>(mapPath);
+            if (mapPrefab == null)
+            {
+                return;
+            }
+
+            mapPool = new ObjectPool<GameObject>(mapPrefab, 1, transform);
+            mapPools[mapPath] = mapPool;
         }
-        GameObject backgroundPrefab = ResourceManager.Instance.LoadResource<GameObject>(mapPath);
-        if (backgroundPrefab != null)
-        {
-            currentMap = Instantiate(backgroundPrefab, Vector3.zero, Quaternion.identity);
-        }
+
+        currentMapPool = mapPool;
+        currentMap = currentMapPool.Get();
     }
 
-    private IEnumerator FadeOutAndIn(int newChapterNumber, Action callback, bool isFade)
-    {
 
-        if (isFade)
+    private string GetMapPath(int chapterNumber)
+    {
+        string mapPath = $"Prefabs/Background/Background_Chapter{chapterNumber}";
+
+        if (GameManager.Instance.CurrentDifficulty == DifficultyLevel.Hard)
         {
-            yield return StartCoroutine(Fade(0, 1));
-            LoadMap(newChapterNumber);
-            yield return StartCoroutine(Fade(1, 0));
+            mapPath += "_Hard";
         }
-        else
-        {
-            LoadMap(newChapterNumber);
-        }
-        callback();
+
+        return mapPath;
     }
 
     private IEnumerator Fade(float startAlpha, float endAlpha)
@@ -82,4 +111,5 @@ public class MapManager : MonoBehaviour
             yield return null;
         }
     }
+
 }

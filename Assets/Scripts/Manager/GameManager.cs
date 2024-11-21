@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.LowLevel;
 
 public enum DifficultyLevel
 {
@@ -31,7 +32,9 @@ public class GameManager : MonoBehaviour
 
     public bool isPuase;
 
-    private Vector2 PlayerInitPosition = new Vector2(-5.72f, -1f);
+    private readonly Vector2 PlayerInitPosition = new Vector2(-5.72f, -1f);
+
+    private ObjectPool<Player> playerPool;
 
     private void Awake()
     {
@@ -48,6 +51,8 @@ public class GameManager : MonoBehaviour
 
     public void InitializeGame()
     {
+        InitializePlayerPool();
+
         saveData = SaveManager.Instance.LoadGame();
         var itemManager = ItemManager.itemManager;
 
@@ -100,12 +105,9 @@ public class GameManager : MonoBehaviour
 
     private void CreatePlayer()
     {
-        GameObject playerPrefab = ResourceManager.Instance.LoadResource<GameObject>("Prefabs/Player");
-        if (playerPrefab != null)
-        {
-            GameObject playerObj = Instantiate(playerPrefab, PlayerInitPosition, Quaternion.identity);
-            player = playerObj.GetComponent<Player>();
-        }
+        player = playerPool.Get();
+        player.transform.position = PlayerInitPosition;
+        player.Init();
         player.PlayerOnDeath += HandlePlayerOnDeath;
     }
 
@@ -125,6 +127,7 @@ public class GameManager : MonoBehaviour
         //플레이어 위치 초기화
         player.transform.position = PlayerInitPosition;
 
+        //수정
         stageManager.StartStage(CurrentChapter, CurrentStage, CurrentDifficulty);
         //맵 전환
         mapManager.ChangeMap(CurrentChapter, () =>
@@ -227,7 +230,7 @@ public class GameManager : MonoBehaviour
         SaveManager.Instance.SaveGame(saveData);
     }
 
-    public GameProgressData GetGameProgress()
+    public GameProgressData GetGameProgress()   
     {
         return saveData.progress;
     }
@@ -236,12 +239,25 @@ public class GameManager : MonoBehaviour
     public void HandlePlayerOnDeath()
     {
         player.PlayerOnDeath -= HandlePlayerOnDeath;
+
         //플레이어 재생성
+        playerPool.ReturnToPool(player);
+        player = null;
+
         CreatePlayer();
+
         //현재 스테이지 재시작
         StartStage(CurrentChapter, CurrentStage, CurrentDifficulty,true);
     }
 
+    private void InitializePlayerPool()
+    {
+        GameObject playerPrefab = ResourceManager.Instance.LoadResource<GameObject>("Prefabs/Player");
+        if (playerPrefab != null)
+        {
+            playerPool = new ObjectPool<Player>(playerPrefab.GetComponent<Player>(), 1);
+        }
+    }
 
     private void OnApplicationPause(bool pauseStatus)
     {

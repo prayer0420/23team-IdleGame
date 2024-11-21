@@ -14,17 +14,22 @@ public class EnumyCondition : MonoBehaviour
     private void Awake()
     {
         maxValue = enumy.Data.enumyData.MaxHealth;
-    }
-
-    private void Start()
-    {
         currentValue = maxValue;
+        UpdateUI();
     }
-
 
     public void UpdateUI()
     {
         slider.value = currentValue / maxValue;
+    }
+
+    public void Init(Enumy enumy)
+    {
+        this.enumy = enumy;
+        maxValue = enumy.Data.enumyData.MaxHealth;
+        currentValue = maxValue;
+
+        UpdateUI();
     }
 
     public void HealthAdd(float amount)

@@ -28,6 +28,7 @@ public class Enumy : MonoBehaviour, TakeDamage
     public float blinkDuration = 0.1f;  // 깜박이는 시간
 
     public Action<Enumy> OnDeath { get; set; }
+    public string PrefabPath { get; set; }
 
     private void Awake()
     {
@@ -53,6 +54,38 @@ public class Enumy : MonoBehaviour, TakeDamage
     {
         enumyStateMachine.FixedUpdate();
     }
+    public void Init()
+    {
+        // 체력 시스템 초기화
+        if (healthSystem == null)
+        {
+            healthSystem = GetComponent<HealthSystem>();
+        }
+        healthSystem.enumy.Init(this);
+
+        // 죽음 상태 초기화
+        isDie = false;
+
+        // 애니메이터 초기화
+        if (animator == null)
+        {
+            animator = GetComponentInChildren<Animator>();
+        }
+        animator.Rebind();
+        animator.Update(0f);
+
+        // 기타 필요한 변수 초기화
+        gameObject.layer = LayerMask.NameToLayer("Enumy"); // 적 레이어 설정
+        rbSprite.color = Color.white; // 색상 초기화
+
+        // 상태 머신 초기화
+        if (enumyStateMachine == null)
+        {
+            enumyStateMachine = new EnumyStateMachine(this);
+        }
+        enumyStateMachine.ChangeState(enumyStateMachine.EnumyMove);
+    }
+
 
     public void AttackDirectionCheck()
     {
@@ -84,6 +117,8 @@ public class Enumy : MonoBehaviour, TakeDamage
     {
         gameObject.layer = LayerMask.NameToLayer("Default");
         StartCoroutine(nameof(FadeOutAndDie));
+        Debug.Log($"죽었다");
+
     }
     private IEnumerator FadeOutAndDie()
     {
@@ -102,7 +137,7 @@ public class Enumy : MonoBehaviour, TakeDamage
 
         rbSprite.color = new Color(startColor.r, startColor.g, startColor.b, 0f);
         OnDeath?.Invoke(this);
-        Destroy(gameObject);
+        //Destroy(gameObject);
     }
 
     private IEnumerator BlinkDamageColor()

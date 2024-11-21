@@ -98,7 +98,7 @@ public class UIManager : MonoBehaviour
     {
         for (int i = 0; i < TopstarImages.Length; i++)
         {
-            TopstarImages[i].sprite = Resources.Load<Sprite>("Sprites/Star_Empty");
+            TopstarImages[i].sprite = ResourceManager.Instance.LoadResource<Sprite>("Sprites/Star_Empty");
         }
     }
 

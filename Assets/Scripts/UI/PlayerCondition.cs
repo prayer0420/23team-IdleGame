@@ -10,7 +10,7 @@ public class PlayerCondition : MonoBehaviour
     [SerializeField] private Player player;
 
     public float currentValue;
-    private float maxValue;
+    public float maxValue;
 
     private void Awake()
     {
@@ -18,8 +18,7 @@ public class PlayerCondition : MonoBehaviour
     }
     private void Start()
     {
-        currentValue =  maxValue;
-        UpdateUI();
+        Init();
     }
 
     public void UpdateUI()
@@ -46,6 +45,12 @@ public class PlayerCondition : MonoBehaviour
         {
             currentValue = maxValue;
         }
+        UpdateUI();
+    }
+
+    public void Init()
+    {
+        currentValue = maxValue;
         UpdateUI();
     }
 }

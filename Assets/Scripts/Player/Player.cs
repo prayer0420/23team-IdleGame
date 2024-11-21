@@ -18,7 +18,7 @@ public class Player : MonoBehaviour, TakeDamage
 
     public Animator animator {  get; private set; }
     public HealthSystem healthSystem { get; private set; }
-    private PlayerStateMachine stateMachine;
+    public PlayerStateMachine stateMachine;
     public Rigidbody2D rb;
     public LayerMask targetMask;
     private SpriteRenderer spriteRenderer;
@@ -69,7 +69,6 @@ public class Player : MonoBehaviour, TakeDamage
     {
         stateMachine.FixedUpdate();
     }
-
     public void AttackDirectionCheck()
     {
           
@@ -95,8 +94,6 @@ public class Player : MonoBehaviour, TakeDamage
 
     }
 
-
-
     public void TakeDamage(float damage)
     {
         healthSystem.player.HealthDecrease(damage);
@@ -106,17 +103,17 @@ public class Player : MonoBehaviour, TakeDamage
     public void OnDie()
     {
         StartCoroutine(nameof(WaitDieTime));
+        stateMachine.AttackState.Reset();
     }
 
-    
+
     public IEnumerator WaitDieTime()
     {
         yield return new WaitForSeconds(2.0f);
 
+        StopAllCoroutines();
         //플레이어 죽음 알림
         PlayerOnDeath?.Invoke();
-
-        Destroy(gameObject);
     }
     private IEnumerator PoisonDamage(float damage)
     {
@@ -159,4 +156,39 @@ public class Player : MonoBehaviour, TakeDamage
         healthSystem.player.currentValue = playerSaveData.CurrentHealth;
 
     }
+
+    public void Init()
+    {
+        // 체력 시스템 초기화
+        if (healthSystem == null)
+        {
+            healthSystem = GetComponent<HealthSystem>();
+        }
+        healthSystem.player.Init();
+
+        // 죽음 상태 초기화
+        isDie = false;
+
+        // 애니메이터 초기화
+        if (animator == null)
+        {
+            animator = GetComponentInChildren<Animator>();
+        }
+        animator.Rebind();
+        animator.Update(0f);
+
+        // 상태 머신 초기화
+        if (stateMachine == null)
+        {
+            stateMachine = new PlayerStateMachine(this);
+        }
+        stateMachine.ChangeState(stateMachine.MoveState);
+
+        // 기타 필요한 변수 초기화
+        spriteRenderer.color = Color.white; // 색상 초기화
+
+        // 이벤트 핸들러 초기화
+        PlayerOnDeath = null;
+    }
+
 }

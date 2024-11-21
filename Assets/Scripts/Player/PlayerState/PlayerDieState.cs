@@ -17,7 +17,7 @@ public class PlayerDieState : PlayerBaseState
 
     public override void Exit()
     {
-
+        SetTriggerAnimation(stateMachine.Player.animationData.MovingParameterHash);
     }
 
     public override void FixedUpdate()

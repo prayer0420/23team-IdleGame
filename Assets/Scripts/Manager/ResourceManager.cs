@@ -5,8 +5,8 @@ public class ResourceManager : MonoBehaviour
 {
     public static ResourceManager Instance { get; private set; }
 
-    //경로를 키로, 프리팹을 벨류로 하는 딕셔너리
     private Dictionary<string, Object> resourceCache;
+    private Dictionary<string, Object[]> resourceArrayCache;
 
     private void Awake()
     {
@@ -14,6 +14,7 @@ public class ResourceManager : MonoBehaviour
         {
             Instance = this;
             resourceCache = new Dictionary<string, Object>();
+            resourceArrayCache = new Dictionary<string, Object[]>();
             DontDestroyOnLoad(gameObject);
         }
         else
@@ -24,12 +25,10 @@ public class ResourceManager : MonoBehaviour
 
     public T LoadResource<T>(string path) where T : Object
     {
-        //딕셔너리에 이미 있다면
-        if (resourceCache.ContainsKey(path))
+        if (resourceCache.TryGetValue(path, out Object cachedResource))
         {
-            return resourceCache[path] as T;
+            return cachedResource as T;
         }
-        //없다면 새로 만들어주기
         else
         {
             T resource = Resources.Load<T>(path);
@@ -39,9 +38,41 @@ public class ResourceManager : MonoBehaviour
             }
             else
             {
-                Debug.LogError($"리소스가 경로에 없음: {path}");
+                Debug.LogError($"경로에 리소스가 없음: {path}");
             }
             return resource;
+        }
+    }
+
+    public T[] LoadAllResources<T>(string path) where T : Object
+    {
+        if (resourceArrayCache.TryGetValue(path, out Object[] cachedResources))
+        {
+            // Object[] 에서 T[]로 변환
+            T[] resources = new T[cachedResources.Length];
+            for (int i = 0; i < cachedResources.Length; i++)
+            {
+                resources[i] = cachedResources[i] as T;
+            }
+            return resources;
+        }
+        else
+        {
+            T[] resources = Resources.LoadAll<T>(path);
+            if (resources != null && resources.Length > 0)
+            {
+                Object[] objects = new Object[resources.Length];
+                for (int i = 0; i < resources.Length; i++)
+                {
+                    objects[i] = resources[i];
+                }
+                resourceArrayCache[path] = objects;
+            }
+            else
+            {
+                Debug.LogError($"경로에 리소스가 없음: {path}");
+            }
+            return resources;
         }
     }
 }
