@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 52713438ff97e664bad384aa37ca1f25, type: 3}
-  m_Name: Sword
+  m_Name: helmet4
   m_EditorClassIdentifier: 
-  itemSprite: {fileID: 21300000, guid: 789e518168d493d4396ec984b1b5bcb3, type: 3}
-  itemName: "\uAC80"
-  itemType: 4
-  itemStat: 20
-  itemDescription: "\uACF5\uACA9\uB825\uC774 \uC62C\uB77C\uAC00\uB294 \uAC80\uC774\uB2E4"
+  itemID: 5
+  itemSprite: {fileID: 21300000, guid: 69b6fac54bf33d94f8b56a037beeb7bf, type: 3}
+  itemName: "\uC601\uC6C5\uC758 \uD5EC\uBA67"
+  itemType: 1
+  itemStat: 35
+  itemDescription: "\uCE5C\uC704\uB300\uC7A5\uC774 \uCC29\uC6A9\uD558\uB294 \uD5EC\uBA67"

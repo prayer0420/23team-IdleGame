@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 52713438ff97e664bad384aa37ca1f25, type: 3}
-  m_Name: SteelBoots
+  m_Name: Glove 1
   m_EditorClassIdentifier: 
-  itemSprite: {fileID: 21300000, guid: c544836e2ceee34428d1abdac6b5ac59, type: 3}
-  itemName: "\uAC15\uCCA0 \uC2E0\uBC1C"
-  itemType: 2
-  itemStat: 150
-  itemDescription: "\uCCB4\uB825\uC774 \uC62C\uB77C\uAC00\uB294 \uAC15\uCCA0 \uC2E0\uBC1C\uC774\uB2E4"
+  itemID: 42
+  itemSprite: {fileID: 21300000, guid: d7236dfb0d0b195439305df676f2425b, type: 3}
+  itemName: "\uC885\uC790\uC758 \uC7A5\uAC11"
+  itemType: 4
+  itemStat: 20
+  itemDescription: "\uC885\uC790\uAC00 \uCC29\uC6A9\uD558\uB294 \uC7A5\uAC11"
