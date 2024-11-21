@@ -32,6 +32,7 @@ public class PlayerAttackState : PlayerBaseState
     }
     private void OnAttack()
     {
+        
         if (Time.time - lastAttackTime > playerData.BaseAttackRate)
         {
 

@@ -1,23 +1,24 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class EnumyPoisonAttack : EnumyBaseState
+public class EnumyStunAttack : EnumyBaseState
 {
-    public EnumyPoisonAttack(EnumyStateMachine stateMachine) : base(stateMachine)
+    public EnumyStunAttack(EnumyStateMachine stateMachine) : base(stateMachine)
     {
-        stateMachine.Enumy.currentType = MonsterType.poison;
+       stateMachine.Enumy.currentType = MonsterType.Stun;
     }
-
+    
     private float lastAttackTime;
     public bool isAttacking;
-
+    Vector2 damagedPosition = new Vector2(-2.78f, 0);
     public override void Enter()
     {
-       
+        
     }
 
     public override void Exit()
     {
-
     }
 
     public override void FixedUpdate()
@@ -26,12 +27,11 @@ public class EnumyPoisonAttack : EnumyBaseState
 
     public override void Update()
     {
-        OnPoisonAttack();
-
-
+       
+        StunAttack();
     }
 
-    private void OnPoisonAttack()
+    public void StunAttack()
     {
         if (Time.time - lastAttackTime > enumyData.AttackRate)
         {
@@ -43,7 +43,9 @@ public class EnumyPoisonAttack : EnumyBaseState
                 SetTriggerAnimation(stateMachine.Enumy.animationData.AttackParameterHash);
                 RaycastHit2D hit = Physics2D.Raycast(stateMachine.Enumy.transform.position, stateMachine.Enumy.transform.right * -1, enumyData.AttackDirection, stateMachine.Enumy.targetMask);
 
-                hit.collider.GetComponent<TakeDamage>().ApplyPoisonDamage(enumyData.PoisonDamage);
+                hit.collider.GetComponent<TakeDamage>().StunDamage(damagedPosition, enumyData.StunDamage);
+                hit.collider.GetComponent<Rigidbody2D>().AddForce(damagedPosition * enumyData.KnockbackForce, ForceMode2D.Impulse);
+                
 
             }
 
