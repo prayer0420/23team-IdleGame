@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public interface TakeDamage
 {
@@ -13,6 +14,7 @@ public class Player : MonoBehaviour, TakeDamage
     [field: Header("Animation")]
     [field: SerializeField] public AnimationData animationData;
     [field: SerializeField] public PlayerSO Data { get;  set; }
+    [field: SerializeField] public EnumySO enumy { get; set; }
 
     public Animator animator {  get; private set; }
     public HealthSystem healthSystem { get; private set; }
@@ -20,6 +22,7 @@ public class Player : MonoBehaviour, TakeDamage
     public Rigidbody2D rb;
     public LayerMask targetMask;
     private SpriteRenderer spriteRenderer;
+    private Coroutine poisonCoroutine;
     public bool isDie = false;
     private bool isPoisoned = false;  // 독 상태 여부
     public Color nomalDamageColor = Color.red;  // 데미지 시 색상
@@ -83,8 +86,16 @@ public class Player : MonoBehaviour, TakeDamage
     }
     public void ApplyPoisonDamage(float damage)
     {
-        healthSystem.player.HealthDecrease(damage);
+        if (poisonCoroutine != null)
+        {
+            StopCoroutine(poisonCoroutine);
+        }
+
+        poisonCoroutine = StartCoroutine(PoisonDamage(damage));
+
     }
+
+
 
     public void TakeDamage(float damage)
     {
@@ -107,12 +118,30 @@ public class Player : MonoBehaviour, TakeDamage
 
         Destroy(gameObject);
     }
+    private IEnumerator PoisonDamage(float damage)
+    {
+        isPoisoned = true;
+        while (isPoisoned)
+        {
+            healthSystem.player.HealthDecrease(damage);
+            StartCoroutine(nameof(BlinkPoisonDamageColor));
+            yield return new WaitForSeconds(enumy.enumyData.poisonInterval);
+        }
+    }
     private IEnumerator BlinknomalDamageColor()
     {
        spriteRenderer.color = nomalDamageColor;
         yield return new WaitForSeconds(blinkDuration);
         spriteRenderer.color = Color.white;
     }
+
+    private IEnumerator BlinkPoisonDamageColor()
+    {
+        spriteRenderer.color = poisonColor;
+        yield return new WaitForSeconds(blinkDuration);
+        spriteRenderer.color = Color.white;
+    }
+
 
     public void SetSaveData(PlayerSaveData data)
     {
