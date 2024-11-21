@@ -128,7 +128,7 @@ public class Enumy : MonoBehaviour, TakeDamage
     {
         gameObject.layer = LayerMask.NameToLayer("Default");
         StartCoroutine(nameof(FadeOutAndDie));
-        OnDeath?.Invoke(this);
+        //OnDeath?.Invoke(this);
         Debug.Log("Á×¾ú´Ù ¾Ë¸²");
     }
 
