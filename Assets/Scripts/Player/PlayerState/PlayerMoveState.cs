@@ -40,6 +40,10 @@ public class PlayerMoveState : PlayerBaseState
             //Debug.Log("¿Ãµø?");
             stateMachine.Player.rb.MovePosition(playerPosition + move);
         }
-        else return;
+        else
+        {
+            stateMachine.Player.rb.velocity = Vector2.zero;
+        }
+                
     }
 }

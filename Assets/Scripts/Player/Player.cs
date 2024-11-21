@@ -8,6 +8,7 @@ public interface TakeDamage
 {
     public void TakeDamage(float damage);
     public void ApplyPoisonDamage(float damage);
+    public void StunDamage(Vector2 damagedPosition, float damage);
 }
 public class Player : MonoBehaviour, TakeDamage
 {
@@ -25,6 +26,7 @@ public class Player : MonoBehaviour, TakeDamage
     private Coroutine poisonCoroutine;
     public bool isDie = false;
     private bool isPoisoned = false;  // 독 상태 여부
+    public bool isStunned = false;  // 스턴 상태 여부
     public Color nomalDamageColor = Color.red;  // 데미지 시 색상
     public Color poisonColor = new Color(0.5f, 0f, 0.5f);
     public float blinkDuration = 0.1f;  // 깜박이는 시간
@@ -72,15 +74,19 @@ public class Player : MonoBehaviour, TakeDamage
 
     public void AttackDirectionCheck()
     {
+        if (isStunned || isDie) return;
           
         RaycastHit2D hit = Physics2D.Raycast(stateMachine.Player.transform.position, stateMachine.Player.transform.right, Data.playerData.BaseAttackaDirection, targetMask);
         if (hit.collider == null)
         {
             stateMachine.ChangeState(stateMachine.MoveState);
         }
-        else if(hit.collider != null && !isDie)
+        else if(hit.collider != null)
         {
+            
+
             stateMachine.ChangeState(stateMachine.AttackState);
+
         }
        
     }
@@ -95,6 +101,16 @@ public class Player : MonoBehaviour, TakeDamage
 
     }
 
+    public void StunDamage(Vector2 damagedPosition, float damage)
+    {
+        if (isStunned) return;
+          
+        healthSystem.player.HealthDecrease(damage);
+        StartCoroutine(nameof(BlinknomalDamageColor));
+        StartCoroutine(nameof(StunCoroutine));
+
+        
+    }
 
 
     public void TakeDamage(float damage)
@@ -125,8 +141,25 @@ public class Player : MonoBehaviour, TakeDamage
         {
             healthSystem.player.HealthDecrease(damage);
             StartCoroutine(nameof(BlinkPoisonDamageColor));
-            yield return new WaitForSeconds(enumy.enumyData.poisonInterval);
+            yield return new WaitForSeconds(enumy.enumyData.PoisonInterval);
         }
+    }
+
+    private IEnumerator StunCoroutine()
+    {
+        isStunned = true;
+        if (isStunned)
+        {
+            stateMachine.AttackState.isAttacking = false;
+            rb.velocity = Vector2.zero;
+
+            // 스턴 지속 시간만큼 대기
+            yield return new WaitForSeconds(enumy.enumyData.StunDuration);
+
+            // 스턴 끝
+            isStunned = false;
+        }
+       
     }
     private IEnumerator BlinknomalDamageColor()
     {
@@ -159,4 +192,6 @@ public class Player : MonoBehaviour, TakeDamage
         healthSystem.player.currentValue = playerSaveData.CurrentHealth;
 
     }
+
+    
 }

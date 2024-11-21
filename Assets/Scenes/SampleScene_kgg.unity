@@ -294,11 +294,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 619673f99c74f7e4db298f8eb33d9c17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &1744495263 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 183540570801197825, guid: b121fef087393dd40b702b3be1c4c432, type: 3}
+--- !u!114 &1744495264 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3768054592070376063, guid: b121fef087393dd40b702b3be1c4c432, type: 3}
   m_PrefabInstance: {fileID: 8669151430102950503}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28bdfc8185e70b042bfd56d64f013f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2503313452906990288
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -322,10 +328,10 @@ PrefabInstance:
     - target: {fileID: 4411233252121874043, guid: d37dcf24de73d584c98054222c0a6da8, type: 3}
       propertyPath: targetPlayer
       value: 
-      objectReference: {fileID: 1744495263}
+      objectReference: {fileID: 1744495264}
     - target: {fileID: 4411233252121874043, guid: d37dcf24de73d584c98054222c0a6da8, type: 3}
       propertyPath: <monsterType>k__BackingField
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4537790664541408805, guid: d37dcf24de73d584c98054222c0a6da8, type: 3}
       propertyPath: m_AnchorMax.x
@@ -405,7 +411,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 183540570801197825, guid: b121fef087393dd40b702b3be1c4c432, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -5.72
+      value: -5.74
       objectReference: {fileID: 0}
     - target: {fileID: 183540570801197825, guid: b121fef087393dd40b702b3be1c4c432, type: 3}
       propertyPath: m_LocalPosition.y
@@ -461,6 +467,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2565810568864875864, guid: b121fef087393dd40b702b3be1c4c432, type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3768054592070376063, guid: b121fef087393dd40b702b3be1c4c432, type: 3}
+      propertyPath: isStunned
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3768054592070376063, guid: b121fef087393dd40b702b3be1c4c432, type: 3}
