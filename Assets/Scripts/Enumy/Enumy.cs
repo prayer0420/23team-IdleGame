@@ -92,7 +92,7 @@ public class Enumy : MonoBehaviour, TakeDamage
     public void AttackDirectionCheck()
     {
         RaycastHit2D hit = Physics2D.Raycast(enumyStateMachine.Enumy.transform.position, enumyStateMachine.Enumy.transform.right * -1, Data.enumyData.AttackDirection, targetMask);
-        if (hit.collider == null && targetPlayer.isStunned)
+        if (hit.collider == null)
         {
             enumyStateMachine.ChangeState(enumyStateMachine.EnumyMove);
         }

@@ -81,7 +81,7 @@ public class Player : MonoBehaviour, TakeDamage
         {
             stateMachine.ChangeState(stateMachine.MoveState);
         }
-        else if(hit.collider != null)
+        else if(hit.collider != null && !isStunned)
         {
             
 
