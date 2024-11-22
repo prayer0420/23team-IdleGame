@@ -1,6 +1,6 @@
 ## 🎤프로젝트 소개
 플레이어가 스스로 사냥하는 방치형 게임! 아이템을 조합해 최강의 캐릭터를 만들자!  <br>
-<img width = 400px src = "https://github.com/user-attachments/assets/7a149509-a6d3-408d-997b-eaf157fd5b14"><br>
+<img width = 300px src = "https://github.com/user-attachments/assets/7a149509-a6d3-408d-997b-eaf157fd5b14"><br>
 
 ## 👨‍👨‍👦 팀 구성 및 역할 소개
 | 역할   | 이름     | 담당 업무 |
@@ -67,7 +67,7 @@
 
 > ## 리소스 및 오브젝트 관리
 > **리소스 매니저 및 오브젝트 풀링** <br>
-> <img width = 400px src = "https://github.com/user-attachments/assets/21a7af09-0a93-4f71-851b-bfd14c2c2237">
+> <img width = 400px src = "https://github.com/user-attachments/assets/21a7af09-0a93-4f71-851b-bfd14c2c2237"><br>
 > 중복 코드 개선, 중앙 관리 가능, 메모리 효율 증대 <br>
 > **맵 및 오디오 생성 코드**<br>
 > <img width = 530px src = "https://github.com/user-attachments/assets/be105232-cca1-40be-a44e-6676ba81314a"> <img width = 430px src = "https://github.com/user-attachments/assets/25c43dcb-ee31-435b-8691-7d068086a4e0"><br>
