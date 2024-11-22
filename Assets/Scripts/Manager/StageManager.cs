@@ -50,7 +50,7 @@ public class StageManager : MonoBehaviour
             Enumy boss = bossEnemyPool.Get();
             boss.Init();
             boss.PrefabPath = prefabPath; // PrefabPath 설정
-            boss.monsterType = MonsterType.normal; // 보스는 일반 타입
+            boss.monsterType = MonsterType.Stun; // 보스는 일반 타입
             boss.OnDeath += HandleEnemyDeath;
             boss.transform.position = bossPosition;
 

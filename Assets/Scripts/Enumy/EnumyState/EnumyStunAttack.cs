@@ -44,8 +44,8 @@ public class EnumyStunAttack : EnumyBaseState
                 RaycastHit2D hit = Physics2D.Raycast(stateMachine.Enumy.transform.position, stateMachine.Enumy.transform.right * -1, enumyData.AttackDirection, stateMachine.Enumy.targetMask);
 
                 hit.collider.GetComponent<TakeDamage>().StunDamage(damagedPosition, enumyData.StunDamage);
-                hit.collider.GetComponent<Rigidbody2D>().AddForce(damagedPosition * enumyData.KnockbackForce, ForceMode2D.Impulse);
-                
+                if (stateMachine.Enumy.targetPlayer.transform.position.x >= -3) 
+                    hit.collider.GetComponent<Rigidbody2D>().AddForce(damagedPosition * enumyData.KnockbackForce, ForceMode2D.Impulse);
 
             }
 
