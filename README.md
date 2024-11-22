@@ -1,5 +1,3 @@
-# 2D 방치형 게임
-
 ## 🎤프로젝트 소개
 플레이어가 스스로 사냥하는 방치형 게임! 아이템을 조합해 최강의 캐릭터를 만들자!  <br>
 <img width = 400px src = "https://github.com/user-attachments/assets/7a149509-a6d3-408d-997b-eaf157fd5b14"><br>
@@ -16,20 +14,18 @@
 2024.11.15 ~ 2024.11.22
 
 ## 주요기능
-> ## 플레이어 및 적 자동 전투 
-> 
-
-> ### 플레이어의 자동 사냥
+> ## 플레이어 및 적 유한 상태머신
 > 
 > 
 
-> ### 적의 AI 구현
-> ## 장비 아이템 가챠 시스템
-> ** 아이템 가챠 시스템<br>
-> <img width = 500px src = "https://github.com/user-attachments/assets/1b4acb68-92ce-4ccb-824a-6fb20503c3b9"><br>
 
-> **아이템 장착시 능력치 변화**<br>
-> <img width = 300px src = "https://github.com/user-attachments/assets/88a4c641-dbc8-4562-bdce-cccb33ed081b"><br>
+> ## 아이템 가챠 시스템
+> **아이템 뽑기 / 능력치 확인**<br>
+> <img width = 350px src = "https://github.com/user-attachments/assets/c82daa84-6b26-4459-9263-303a9b6c8483"><br>
+> **아이템 뽑기 / 능력치 비교, 교체**<br>
+> <img width = 350px src = "https://github.com/user-attachments/assets/003865f4-1ce6-4b28-827f-11853e679bce"><br>
+
+
 
 > ## 맵 및 스테이지 구성
 > **스테이지 구성**<br>
@@ -41,14 +37,13 @@
 > 이미 클리어한 스테이지 및 챕터는 가능<br>
 > <img width = 300px src = "https://github.com/user-attachments/assets/c5cec43a-816f-47af-8629-98079093cd17"><br><br>
 > <br>
+
 > ## 리소스 및 오브젝트 관리
-> **리소스 매니저를 통한 자원 관리** <br>
+> **리소스 매니저 및 오브젝트 풀링** <br>
 > 중복 코드 개선, 중앙 관리 가능, 메모리 효율 증대 <br>
-> <img width = 300px src = "https://github.com/user-attachments/assets/e380c692-217f-4af4-904e-d1390d1941ff"> <br>
-> 적 및 아이템 리소스 가져오기<br>
-> <img width = 600px src = "https://github.com/user-attachments/assets/a3d2f30c-819d-4e14-948d-6f74227a588f"> <img width = 450px src = "https://github.com/user-attachments/assets/66b66f47-d3fb-4429-a2d1-07f92f3bc263"> <br>
-> **오브젝트 풀링을 통한 오브젝트 관리** <br>
-> ![스크린샷 2024-11-21 210928](https://github.com/user-attachments/assets/36a2aadf-67a5-4d57-bbc8-35a17971332d)
+> **맵 및 오디오 생성 코드**<br>
+> <img width = 530px src = "https://github.com/user-attachments/assets/be105232-cca1-40be-a44e-6676ba81314a"> <img width = 430px src = "https://github.com/user-attachments/assets/25c43dcb-ee31-435b-8691-7d068086a4e0"><br>
+
 
 > ## 세이브 및 오디오 시스템
 > * 데이터를 저장 및 불러올 수 있습니다.
